@@ -240,12 +240,8 @@ export default function Page() {
       </div>
 
       {caseStudiesData.map((study) => (
-        <div
-          className={`flex flex-col gap-8 lg:flex-row ${
-            study.position === "right" ? "lg:flex-row-reverse" : ""
-          }`}
-        >
-          <CaseStudy key={study.id} data={study} />
+        <div key={study.id}>
+          <CaseStudy data={study} />
         </div>
       ))}
     </div>
