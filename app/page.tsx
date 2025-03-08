@@ -43,6 +43,23 @@ const gridItems = [
   },
 ];
 
+export const dynamic = 'force-dynamic';
+
+async function fetchData() {
+  try {
+    // Your existing fetch code
+    const response = await fetch('/api/your-endpoint');
+    if (!response.ok) {
+      console.error('API response not OK:', response.status);
+      return null; // Return null or a fallback value
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return null; // Return null or a fallback value
+  }
+}
+
 export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
