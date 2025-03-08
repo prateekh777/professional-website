@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import storageInstance from '@/lib/storage-instance';
