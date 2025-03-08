@@ -4,10 +4,9 @@ const nextConfig = {
   swcMinify: true,
   images: {
     domains: [],
-    unoptimized: process.env.NODE_ENV !== 'production',
+    unoptimized: process.env.NODE_ENV !== "production",
   },
-  // Enable static exports for faster builds on Vercel
-  output: 'standalone',
-}
+  // Remove the output: 'standalone' config to allow dynamic features
+};
 
-module.exports = nextConfig 
+module.exports = nextConfig;
