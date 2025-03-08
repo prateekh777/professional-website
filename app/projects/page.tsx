@@ -1,94 +1,94 @@
-import { Metadata } from 'next'
-import Image from 'next/image'
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Projects | Professional Website',
-  description: 'Explore my portfolio of projects and work',
-}
+import { useEffect } from "react";
+import { ProjectSection } from "@/components/sections/ProjectSection";
+import { motion } from "framer-motion";
+import { Project } from "@/lib/types/project";
 
-export default function ProjectsPage() {
+export default function Projects() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Static project data
+  const projects: Project[] = [
+    {
+      id: 1,
+      title: "Edoflip",
+      subtitle: "1:1 Live Tutoring for Smarter Learning",
+      description:
+        "Edoflip is a platform for personalized tutoring that helps students excel. With expert tutors and tailored learning plans, we've helped thousands of students in the US and EU boost their confidence, improve grades, and achieve academic success—one session at a time",
+      imageUrl:
+        "https://prateek-personal.s3.ap-south-1.amazonaws.com/Assets/Projects/Edoflip+Large+Image.png",
+      projectUrl: "https://example.com/ecommerce",
+      tags: ["React", "Node.js", "PostgreSQL", "Stripe"],
+      position: "left",
+    },
+    {
+      id: 2,
+      title: "🎵 Singalala ",
+      subtitle: "Custom Songs for Life's Special Moments",
+      description:
+        "Singalala turns emotions into melodies—personalized songs crafted for birthdays, weddings, and unforgettable celebrations. A unique blend of music, technology, and storytelling.",
+      imageUrl:
+        "https://prateek-personal.s3.ap-south-1.amazonaws.com/Assets/Projects/Singalala+Large+Image.png",
+      projectUrl: "https://www.singalala.com",
+      tags: ["React Native", "PlanetScale", "Music API", "AWS S2"],
+      position: "right",
+    },
+    {
+      id: 3,
+      title: "⚡ Greetude Energy",
+      subtitle: "Smart Solar Solutions for a Sustainable Future",
+      description:
+        "Greetude Energy made clean energy more accessible and efficient. By combining advanced technology with intelligent energy management, we've helped homes and businesses reduce costs, lower carbon footprints, and embrace a greener future.",
+      imageUrl:
+        "https://prateek-personal.s3.ap-south-1.amazonaws.com/Assets/Projects/Greetude+Large+Image.png",
+      projectUrl: "https://example.com/smarthome",
+      tags: ["IoT", "Edge Computing", "Security Protocols", "WebSockets"],
+      position: "left",
+    },
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        duration: 0.6,
+      },
+    },
+  };
+
+  const titleVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-10 text-center">My Projects</h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Project Card 1 */}
-          <div className="bg-card rounded-lg overflow-hidden shadow-lg">
-            <div className="h-48 bg-muted relative">
-              {/* Placeholder for project image */}
-              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                Project Image
-              </div>
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2">E-Commerce Website</h3>
-              <p className="text-muted-foreground mb-4">
-                A full-featured online store built with Next.js and Stripe integration.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">Next.js</span>
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">TypeScript</span>
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">Stripe</span>
-              </div>
-              <div className="flex justify-between">
-                <a href="#" className="text-primary hover:underline">View Demo</a>
-                <a href="#" className="text-primary hover:underline">Source Code</a>
-              </div>
-            </div>
-          </div>
-          
-          {/* Project Card 2 */}
-          <div className="bg-card rounded-lg overflow-hidden shadow-lg">
-            <div className="h-48 bg-muted relative">
-              {/* Placeholder for project image */}
-              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                Project Image
-              </div>
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2">Task Management App</h3>
-              <p className="text-muted-foreground mb-4">
-                A productivity app for managing tasks and projects with team collaboration.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">React</span>
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">Firebase</span>
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">TailwindCSS</span>
-              </div>
-              <div className="flex justify-between">
-                <a href="#" className="text-primary hover:underline">View Demo</a>
-                <a href="#" className="text-primary hover:underline">Source Code</a>
-              </div>
-            </div>
-          </div>
-          
-          {/* Project Card 3 */}
-          <div className="bg-card rounded-lg overflow-hidden shadow-lg">
-            <div className="h-48 bg-muted relative">
-              {/* Placeholder for project image */}
-              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                Project Image
-              </div>
-            </div>
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2">AI Content Generator</h3>
-              <p className="text-muted-foreground mb-4">
-                An AI-powered tool that generates content for blogs, social media, and more.
-              </p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">Python</span>
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">OpenAI</span>
-                <span className="px-2 py-1 bg-secondary/10 text-secondary-foreground text-xs rounded-full">FastAPI</span>
-              </div>
-              <div className="flex justify-between">
-                <a href="#" className="text-primary hover:underline">View Demo</a>
-                <a href="#" className="text-primary hover:underline">Source Code</a>
-              </div>
-            </div>
-          </div>
-        </div>
+    <motion.div
+      className="container mx-auto max-w-6xl space-y-12 py-16"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.div variants={titleVariants} className="text-center">
+        <h1 className="text-4xl font-bold">Projects</h1>
+        <p className="mt-4 text-xl text-muted-foreground">
+          Discover side hustles that make this world a better place!
+        </p>
+      </motion.div>
+
+      <div className="space-y-16 divide-y divide-border">
+        {projects.map((project, index) => (
+          <ProjectSection key={project.id} project={project} index={index} />
+        ))}
       </div>
-    </main>
-  )
-} 
+    </motion.div>
+  );
+}
