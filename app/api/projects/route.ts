@@ -61,4 +61,4 @@ export async function GET(request: NextRequest) {
 }
 
 // Force dynamic rendering for this route
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
