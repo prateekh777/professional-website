@@ -417,73 +417,74 @@ export function CustomComponentsShowcase() {
             <Heading level="h3" className="mb-4">Basic Carousel</Heading>
             <div className="mb-12">
               <CarouselDisplay 
-                items={carouselItems}
-                variant="default"
+                className="border rounded-lg overflow-hidden"
                 size="full"
                 navigation="both"
-                autoplay="false"
-                loop
-                showArrows
-                showDots
-                arrowPosition="inside"
-                dotPosition="inside"
-                effect="slide"
-              />
+                autoplay={false}
+                loop={true}
+                showArrows={true}
+              >
+                {carouselItems.map((item, index) => (
+                  <div key={index} className="w-full h-64 flex items-center justify-center">
+                    {item}
+                  </div>
+                ))}
+              </CarouselDisplay>
             </div>
             
             <Heading level="h3" className="mb-4">Multiple Items Carousel</Heading>
             <div className="mb-12">
               <CarouselDisplay 
-                items={carouselItems}
-                itemsPerView={2}
-                spacing={16}
-                variant="borderless"
+                className="border rounded-lg overflow-hidden"
                 size="full"
                 navigation="both"
-                autoplay="false"
-                loop
-                showArrows
-                showDots
-                arrowPosition="inside"
-                dotPosition="outside"
-                effect="slide"
-              />
+                autoplay={false}
+                loop={true}
+                showArrows={true}
+              >
+                {carouselItems.map((item, index) => (
+                  <div key={index} className="w-full h-64 flex items-center justify-center">
+                    {item}
+                  </div>
+                ))}
+              </CarouselDisplay>
             </div>
             
             <Heading level="h3" className="mb-4">Fade Effect Carousel</Heading>
             <div className="mb-12">
               <CarouselDisplay 
-                items={carouselItems}
-                variant="default"
+                className="border rounded-lg overflow-hidden"
                 size="full"
                 navigation="both"
-                autoplay="false"
-                loop
-                showArrows
-                showDots
-                arrowPosition="inside"
-                dotPosition="inside"
-                effect="fade"
-                aspectRatio="16/9"
-              />
+                autoplay={false}
+                loop={true}
+                showArrows={true}
+              >
+                {carouselItems.map((item, index) => (
+                  <div key={index} className="w-full h-64 flex items-center justify-center">
+                    {item}
+                  </div>
+                ))}
+              </CarouselDisplay>
             </div>
             
             <Heading level="h3" className="mb-4">Autoplay Carousel</Heading>
-            <div>
+            <div className="mb-12">
               <CarouselDisplay 
-                items={carouselItems}
-                variant="default"
+                className="border rounded-lg overflow-hidden"
                 size="full"
                 navigation="dots"
-                autoplay="true"
+                autoplay={true}
                 autoplayInterval={3000}
-                loop
+                loop={true}
                 showArrows={false}
-                showDots
-                dotPosition="inside"
-                dotVariant="line"
-                effect="slide"
-              />
+              >
+                {carouselItems.map((item, index) => (
+                  <div key={index} className="w-full h-64 flex items-center justify-center">
+                    {item}
+                  </div>
+                ))}
+              </CarouselDisplay>
             </div>
           </Section>
         </TabsContent>

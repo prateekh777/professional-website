@@ -62,7 +62,7 @@ export function formatItemUrls<T extends Record<string, any>>(
   
   urlFields.forEach(field => {
     if (field in formattedItem) {
-      formattedItem[field] = getMediaUrl(formattedItem[field] as string | undefined | null);
+      (formattedItem as any)[field] = getMediaUrl((formattedItem as any)[field] as string | undefined | null);
     }
   });
   

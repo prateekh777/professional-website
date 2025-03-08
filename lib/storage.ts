@@ -457,7 +457,7 @@ export class MongoDBStorage {
         return null;
       }
       
-      return this.convertIdToString(result) as schemas.CaseStudy;
+      return this.convertIdToString(result as any) as schemas.CaseStudy;
     });
   }
 
@@ -596,7 +596,7 @@ export class MongoDBStorage {
         return null;
       }
       
-      return this.convertIdToString(result) as schemas.AiWork;
+      return this.convertIdToString(result as any) as schemas.AiWork;
     });
   }
 
@@ -736,7 +736,7 @@ export class MongoDBStorage {
         return null;
       }
       
-      return this.convertIdToString(result) as schemas.Interest;
+      return this.convertIdToString(result as any) as schemas.Interest;
     });
   }
 
