@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -33,53 +33,37 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Use Google's standard test key directly
-const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
-
 export default function Contact() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [calendlyLoaded, setCalendlyLoaded] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
-  const recaptchaRef = useRef<HTMLDivElement>(null);
 
-  // Load Calendly widget script and reCAPTCHA script
+  // Load Calendly widget script
   useEffect(() => {
-    // Load Calendly script
-    const calendlyScript = document.createElement('script');
-    calendlyScript.src = 'https://assets.calendly.com/assets/external/widget.js';
-    calendlyScript.async = true;
-    calendlyScript.onload = () => setCalendlyLoaded(true);
-    document.body.appendChild(calendlyScript);
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    script.onload = () => setCalendlyLoaded(true);
+    
+    document.body.appendChild(script);
     
     // Load reCAPTCHA script
     const recaptchaScript = document.createElement('script');
     recaptchaScript.src = 'https://www.google.com/recaptcha/api.js';
     recaptchaScript.async = true;
-    recaptchaScript.onload = () => {
-      console.log("reCAPTCHA script loaded");
-      setRecaptchaLoaded(true);
-    };
     document.body.appendChild(recaptchaScript);
     
     return () => {
       // Cleanup function to remove the scripts when component unmounts
-      if (document.body.contains(calendlyScript)) {
-        document.body.removeChild(calendlyScript);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
       }
       if (document.body.contains(recaptchaScript)) {
         document.body.removeChild(recaptchaScript);
       }
     };
   }, []);
-
-  // Log when reCAPTCHA is loaded
-  useEffect(() => {
-    if (recaptchaLoaded) {
-      console.log("reCAPTCHA is ready to use with site key:", RECAPTCHA_SITE_KEY);
-    }
-  }, [recaptchaLoaded]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -93,19 +77,21 @@ export default function Contact() {
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
-      // Get the reCAPTCHA token using the global grecaptcha object
-      const recaptchaToken = (window as any).grecaptcha?.getResponse();
-      console.log("reCAPTCHA token obtained:", recaptchaToken ? `Yes (length: ${recaptchaToken.length})` : "No");
-      
-      // For testing, if no token is obtained, use a dummy token
-      const tokenToSend = recaptchaToken || "test-token-for-development";
+      // Get the reCAPTCHA token
+      // For test purposes, we'll use a simple approach - in production you'd want to use refs
+      const recaptchaToken = (window as any).grecaptcha?.getResponse() || '';
       
       if (!recaptchaToken) {
-        console.warn("No reCAPTCHA token obtained, using test token instead");
+        toast({
+          title: "Verification required",
+          description: "Please complete the reCAPTCHA verification before submitting.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
       }
       
       // Send the data to our API endpoint
-      console.log("Sending form data to API with reCAPTCHA token");
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -113,12 +99,11 @@ export default function Contact() {
         },
         body: JSON.stringify({
           ...data,
-          recaptchaToken: tokenToSend
+          recaptchaToken
         }),
       });
       
       const result = await response.json();
-      console.log("API response:", result);
       
       if (response.ok && result.success) {
         toast({
@@ -245,15 +230,11 @@ export default function Contact() {
                     )}
                   />
                   
-                  {/* Google reCAPTCHA - Using the hardcoded test key */}
+                  {/* Google reCAPTCHA */}
                   <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
                     <p className="text-sm text-gray-500 mb-3">Please verify you're human:</p>
                     <div className="flex justify-center">
-                      <div 
-                        ref={recaptchaRef}
-                        className="g-recaptcha" 
-                        data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                      ></div>
+                      <div className="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
                     </div>
                   </div>
                   

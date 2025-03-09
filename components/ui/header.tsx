@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import Link from "next/link"; // Correct import for Next.js Link
 import { Button } from "@/components/ui/button";
@@ -16,11 +16,9 @@ import {
   DialogClose,
   DialogContent,
   DialogTrigger,
-  DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog"; // Use Dialog instead of Drawer
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 export function Header() {
   const pathname = usePathname();
@@ -70,10 +68,6 @@ export function Header() {
               </Button>
             </DialogTrigger>
             <DialogContent className="bottom-0 p-0 h-auto max-h-[80vh] bottom-sheet">
-              <DialogTitle className="sr-only">Navigation Menu</DialogTitle>
-              <DialogDescription className="sr-only">
-                Navigate through different sections of the portfolio
-              </DialogDescription>
               <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
               <div className="flex flex-col space-y-3 p-4 text-center">
                 {navItems.map((item) => (
@@ -105,12 +99,10 @@ export function Header() {
         {/* Desktop Contact Button */}
         <div className="hidden md:block">
           <Link href="/contact">
-            <Button variant="outline" size="sm">
-              Contact
-            </Button>
+            <Button variant="outline" size="sm">Contact</Button>
           </Link>
         </div>
       </div>
     </header>
   );
-}
+} 

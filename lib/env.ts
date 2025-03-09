@@ -8,7 +8,6 @@
 // Public environment variables (accessible in browser)
 export const publicEnv = {
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
 };
 
 // Server-only environment variables (not exposed to browser)
@@ -20,24 +19,10 @@ export const serverEnv = {
   AWS_S3_BUCKET: process.env.AWS_S3_BUCKET,
   
   // Email Service
-  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY || '',
+  SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
   
   // Database
   MONGODB_URI: process.env.MONGODB_URI,
-  
-  // Email addresses
-  EMAIL_FROM: process.env.EMAIL_FROM || 'noreply@prateekhakay.com',
-  EMAIL_TO: process.env.EMAIL_TO || 'prateek@edoflip.com',
-  
-  // reCAPTCHA keys
-  RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY || '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
-  
-  // Environment
-  NODE_ENV: process.env.NODE_ENV || 'development',
-  
-  // Debugging flags
-  DEBUG_EMAIL: process.env.DEBUG_EMAIL === 'true',
-  SKIP_RECAPTCHA_IN_DEV: process.env.SKIP_RECAPTCHA_IN_DEV === 'true',
 };
 
 /**
