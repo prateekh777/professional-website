@@ -5,48 +5,48 @@
 /* Font face declarations for direct CSS usage if needed */
 @layer base {
   @font-face {
-    font-family: 'Aeonik';
-    src: url('/Fonts/AeonikTRIAL-Light.otf') format('opentype');
+    font-family: "Aeonik";
+    src: url("/Fonts/AeonikTRIAL-Light.otf") format("opentype");
     font-weight: 300;
     font-style: normal;
     font-display: swap;
   }
-  
+
   @font-face {
-    font-family: 'Aeonik';
-    src: url('/Fonts/AeonikTRIAL-LightItalic.otf') format('opentype');
+    font-family: "Aeonik";
+    src: url("/Fonts/AeonikTRIAL-LightItalic.otf") format("opentype");
     font-weight: 300;
     font-style: italic;
     font-display: swap;
   }
-  
+
   @font-face {
-    font-family: 'Aeonik';
-    src: url('/Fonts/AeonikTRIAL-Regular.otf') format('opentype');
+    font-family: "Aeonik";
+    src: url("/Fonts/AeonikTRIAL-Regular.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
-  
+
   @font-face {
-    font-family: 'Aeonik';
-    src: url('/Fonts/AeonikTRIAL-RegularItalic.otf') format('opentype');
+    font-family: "Aeonik";
+    src: url("/Fonts/AeonikTRIAL-RegularItalic.otf") format("opentype");
     font-weight: 400;
     font-style: italic;
     font-display: swap;
   }
-  
+
   @font-face {
-    font-family: 'Aeonik';
-    src: url('/Fonts/AeonikTRIAL-Bold.otf') format('opentype');
+    font-family: "Aeonik";
+    src: url("/Fonts/AeonikTRIAL-Bold.otf") format("opentype");
     font-weight: 700;
     font-style: normal;
     font-display: swap;
   }
-  
+
   @font-face {
-    font-family: 'Aeonik';
-    src: url('/Fonts/AeonikTRIAL-BoldItalic.otf') format('opentype');
+    font-family: "Aeonik";
+    src: url("/Fonts/AeonikTRIAL-BoldItalic.otf") format("opentype");
     font-weight: 700;
     font-style: italic;
     font-display: swap;
@@ -54,55 +54,69 @@
 
   /* Set Aeonik as the default font for the entire site */
   html {
-    font-family: 'Aeonik', system-ui, sans-serif;
+    font-family: "Aeonik", system-ui, sans-serif;
   }
 
   :root {
-    /* Convert the RGB values from theme.json */
-    --background: 190, 180, 160;
-    --foreground: 51, 51, 51;
-    --card: 255, 255, 255;
-    --card-foreground: 34, 34, 34;
-    --popover: 255, 255, 255;
-    --popover-foreground: 34, 34, 34;
-    --primary: 34, 34, 34;
-    --primary-foreground: 255, 255, 255;
-    --secondary: 123, 123, 123;
-    --secondary-foreground: 255, 255, 255;
-    --muted: 248, 248, 248;
-    --muted-foreground: 123, 123, 123;
-    --accent: 248, 248, 248;
-    --accent-foreground: 34, 34, 34;
-    --destructive: 220, 38, 38;
-    --destructive-foreground: 255, 255, 255;
-    --border: 123, 123, 123;
-    --input: 248, 248, 248;
-    --ring: 34, 34, 34;
-    
-    --radius: 0.75rem;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
   }
- 
+
   .dark {
-    /* Dark mode colors - you can customize these */
-    --background: 20, 20, 20;
-    --foreground: 230, 230, 230;
-    --card: 40, 40, 40;
-    --card-foreground: 230, 230, 230;
-    --popover: 40, 40, 40;
-    --popover-foreground: 230, 230, 230;
-    --primary: 34, 34, 34;
-    --primary-foreground: 255, 255, 255;
-    --secondary: 123, 123, 123;
-    --secondary-foreground: 255, 255, 255;
-    --muted: 40, 40, 40;
-    --muted-foreground: 150, 150, 150;
-    --accent: 40, 40, 40;
-    --accent-foreground: 230, 230, 230;
-    --destructive: 220, 38, 38;
-    --destructive-foreground: 255, 255, 255;
-    --border: 80, 80, 80;
-    --input: 40, 40, 40;
-    --ring: 100, 100, 100;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
 
@@ -112,6 +126,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
@@ -126,24 +141,24 @@
   .masonry-grid {
     columns: 1;
   }
-  
+
   @media (min-width: 640px) {
     .masonry-grid {
       columns: 2;
     }
   }
-  
+
   @media (min-width: 1024px) {
     .masonry-grid {
       columns: 3;
     }
   }
-  
+
   .masonry-grid > * {
     break-inside: avoid;
     margin-bottom: 1rem;
   }
-} 
+}
 
 @keyframes fadeIn {
   from {
@@ -154,7 +169,7 @@
     opacity: 1;
     transform: translateY(0);
   }
-} 
+}
 
 @keyframes shimmer {
   0% {
@@ -180,7 +195,8 @@
 }
 
 @keyframes pulse-subtle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
@@ -220,7 +236,7 @@
     font-size: 0.75rem;
     line-height: 1rem;
   }
-} 
+}
 
 /* Add highlight class styling */
 .highlight {
@@ -232,7 +248,7 @@
 }
 
 .highlight::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 8px;
@@ -270,48 +286,48 @@
 
 @layer base {
   @font-face {
-    font-family: 'Aeonik TRIAL';
-    src: url('/fonts/AeonikTRIAL-Regular.otf') format('opentype');
+    font-family: "Aeonik TRIAL";
+    src: url("/fonts/AeonikTRIAL-Regular.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Aeonik TRIAL';
-    src: url('/fonts/AeonikTRIAL-RegularItalic.otf') format('opentype');
+    font-family: "Aeonik TRIAL";
+    src: url("/fonts/AeonikTRIAL-RegularItalic.otf") format("opentype");
     font-weight: 400;
     font-style: italic;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Aeonik TRIAL';
-    src: url('/fonts/AeonikTRIAL-Light.otf') format('opentype');
+    font-family: "Aeonik TRIAL";
+    src: url("/fonts/AeonikTRIAL-Light.otf") format("opentype");
     font-weight: 300;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Aeonik TRIAL';
-    src: url('/fonts/AeonikTRIAL-LightItalic.otf') format('opentype');
+    font-family: "Aeonik TRIAL";
+    src: url("/fonts/AeonikTRIAL-LightItalic.otf") format("opentype");
     font-weight: 300;
     font-style: italic;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Aeonik TRIAL';
-    src: url('/fonts/AeonikTRIAL-Bold.otf') format('opentype');
+    font-family: "Aeonik TRIAL";
+    src: url("/fonts/AeonikTRIAL-Bold.otf") format("opentype");
     font-weight: 700;
     font-style: normal;
     font-display: swap;
   }
 
   @font-face {
-    font-family: 'Aeonik TRIAL';
-    src: url('/fonts/AeonikTRIAL-BoldItalic.otf') format('opentype');
+    font-family: "Aeonik TRIAL";
+    src: url("/fonts/AeonikTRIAL-BoldItalic.otf") format("opentype");
     font-weight: 700;
     font-style: italic;
     font-display: swap;
@@ -319,30 +335,45 @@
 
   * {
     @apply border-border font-aeonik;
-    font-family: 'Aeonik TRIAL', sans-serif !important;
+    font-family: "Aeonik TRIAL", sans-serif !important;
   }
 
   body {
     @apply font-aeonik antialiased text-foreground;
-    font-family: 'Aeonik TRIAL', sans-serif !important;
-    background: linear-gradient(180deg, rgb(1000, 1000, 1000) 0%, rgb(200, 190, 170) 100%);
+    font-family: "Aeonik TRIAL", sans-serif !important;
+    background: linear-gradient(
+      180deg,
+      rgb(1000, 1000, 1000) 0%,
+      rgb(200, 190, 170) 100%
+    );
     color: #333333;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-aeonik font-bold text-[#222222];
-    font-family: 'Aeonik TRIAL', sans-serif !important;
+    font-family: "Aeonik TRIAL", sans-serif !important;
     letter-spacing: -0.02em;
   }
-  
+
   p {
     @apply font-aeonik text-[#222222];
-    font-family: 'Aeonik TRIAL', sans-serif !important;
+    font-family: "Aeonik TRIAL", sans-serif !important;
     letter-spacing: 0.01em;
   }
-  
-  a, button, input, textarea, select, span, div {
-    font-family: 'Aeonik TRIAL', sans-serif !important;
+
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  span,
+  div {
+    font-family: "Aeonik TRIAL", sans-serif !important;
   }
 
   /* Custom hover effects */
@@ -350,35 +381,43 @@
     @apply transition-all duration-300;
     transform: translateY(0);
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Custom blur effects */
   .blur-backdrop {
     @apply backdrop-blur-md bg-white/20;
   }
-  
+
   /* Diagonal blur gradient - Lighter version */
   .diagonal-blur-gradient {
-    background: linear-gradient(135deg, rgba(240,235,220,0.5) 0%, rgba(200,195,180,0.7) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(240, 235, 220, 0.5) 0%,
+      rgba(200, 195, 180, 0.7) 100%
+    );
     backdrop-filter: blur(6px);
     position: relative;
   }
-  
+
   .diagonal-blur-gradient::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, transparent 0%, rgba(0,0,0,0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.08) 100%
+    );
     z-index: -1;
   }
-  
+
   /* Grid card animations */
   .grid-card {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -386,14 +425,14 @@
     border-radius: 12px;
     position: relative;
   }
-  
+
   .grid-card:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
   }
-  
+
   .grid-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -2px;
     left: -2px;
@@ -405,36 +444,36 @@
     border-radius: 14px;
     transition: opacity 0.3s ease;
   }
-  
+
   .grid-card:hover::before {
     opacity: 1;
   }
-  
+
   .grid-card-content {
     transition: all 0.3s ease;
     transform-origin: center;
   }
-  
+
   .grid-card:hover .grid-card-content {
     transform: scale(1.04);
   }
-  
+
   .grid-card:hover .card-icon {
     transform: rotate(5deg) scale(1.1);
   }
-  
+
   .card-icon {
     transition: all 0.5s ease;
     display: inline-block;
   }
-  
+
   .card-title {
     position: relative;
     display: inline-block;
   }
-  
+
   .card-title::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 0;
     height: 2px;
@@ -444,19 +483,19 @@
     transition: all 0.3s ease;
     transform: translateX(-50%);
   }
-  
+
   .grid-card:hover .card-title::after {
     width: 70%;
   }
-  
+
   /* Shimmer effect */
   .shimmer {
     position: relative;
     overflow: hidden;
   }
-  
+
   .shimmer::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
@@ -472,7 +511,7 @@
     animation: shimmerEffect 2.5s infinite;
     pointer-events: none;
   }
-  
+
   @keyframes shimmerEffect {
     0% {
       transform: translateX(-100%) rotate(30deg);
@@ -481,7 +520,7 @@
       transform: translateX(100%) rotate(30deg);
     }
   }
-  
+
   /* Fade in animation */
   @keyframes fadeIn {
     from {
@@ -493,7 +532,7 @@
       transform: translateY(0);
     }
   }
-  
+
   /* Subtle pulse animation for highlights */
   @keyframes subtlePulse {
     0% {
@@ -506,7 +545,7 @@
       opacity: 0.4;
     }
   }
-  
+
   .animate-pulse-subtle {
     animation: subtlePulse 3s ease-in-out infinite;
   }
@@ -536,4 +575,10 @@
 
 .timeline-item:hover .timeline-connector {
   background-color: #000000;
-} 
+}
+
+/* Font fallback system */
+body {
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+}
