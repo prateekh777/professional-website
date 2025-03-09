@@ -22,8 +22,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/toast";
 import { Mail, MapPin, Calendar, CheckCircle, Globe, Twitter, Instagram, Linkedin, Facebook, Github } from "lucide-react";
+
+// Add reCAPTCHA type definition
+declare global {
+  interface Window {
+    grecaptcha: {
+      ready: (callback: () => void) => void;
+      execute: (siteKey: string, options: { action: string }) => Promise<string>;
+      getResponse: (widgetId?: number) => string;
+      reset: (widgetId?: number) => void;
+    };
+  }
+}
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -38,6 +50,7 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [calendlyLoaded, setCalendlyLoaded] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
   // Load Calendly widget script
   useEffect(() => {
@@ -48,10 +61,11 @@ export default function Contact() {
     
     document.body.appendChild(script);
     
-    // Load reCAPTCHA script
+    // Load reCAPTCHA v2 script
     const recaptchaScript = document.createElement('script');
     recaptchaScript.src = 'https://www.google.com/recaptcha/api.js';
     recaptchaScript.async = true;
+    recaptchaScript.onload = () => setRecaptchaLoaded(true);
     document.body.appendChild(recaptchaScript);
     
     return () => {
@@ -76,22 +90,22 @@ export default function Contact() {
 
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
+    
     try {
-      // Get the reCAPTCHA token
-      // For test purposes, we'll use a simple approach - in production you'd want to use refs
-      const recaptchaToken = (window as any).grecaptcha?.getResponse() || '';
+      // Get reCAPTCHA v2 token
+      const token = window.grecaptcha?.getResponse();
       
-      if (!recaptchaToken) {
+      if (!token) {
         toast({
-          title: "Verification required",
-          description: "Please complete the reCAPTCHA verification before submitting.",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Please complete the reCAPTCHA verification.',
+          variant: 'destructive',
         });
         setIsSubmitting(false);
         return;
       }
       
-      // Send the data to our API endpoint
+      // Send form data to API
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -99,38 +113,51 @@ export default function Contact() {
         },
         body: JSON.stringify({
           ...data,
-          recaptchaToken
+          recaptchaToken: token,
         }),
       });
       
+      // Handle non-JSON responses (like HTML error pages)
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('Non-JSON response received:', await response.text());
+        throw new Error('Received non-JSON response from server');
+      }
+      
       const result = await response.json();
       
-      if (response.ok && result.success) {
+      if (!result.success) {
+        // Show error toast
         toast({
-          title: "Message sent!",
-          description: "Thanks for reaching out. I'll get back to you soon.",
+          title: 'Error',
+          description: result.message || 'Failed to send message. Please try again later.',
+          variant: 'destructive',
         });
-        form.reset();
-        // Reset reCAPTCHA
-        try {
-          (window as any).grecaptcha?.reset();
-        } catch (e) {
-          console.error("Error resetting reCAPTCHA:", e);
-        }
-        // Set submitted state to show success message
-        setFormSubmitted(true);
+        console.error('Contact form error:', result);
       } else {
-        throw new Error(result.message || 'Failed to send message');
+        // Show success toast
+        toast({
+          title: 'Message Sent!',
+          description: 'Thank you for your message. I\'ll respond as soon as possible.',
+        });
+        
+        // Reset form and reCAPTCHA
+        form.reset();
+        window.grecaptcha?.reset();
+        setFormSubmitted(true);
       }
     } catch (error) {
       console.error('Contact form error:', error);
+      
+      // Show error toast
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to send message. Please try again later.',
+        variant: 'destructive',
       });
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   };
 
   return (
@@ -230,11 +257,14 @@ export default function Contact() {
                     )}
                   />
                   
-                  {/* Google reCAPTCHA */}
+                  {/* Google reCAPTCHA v2 */}
                   <div className="my-6 p-4 border border-gray-200 rounded-lg bg-gray-50 shadow-sm">
                     <p className="text-sm text-gray-500 mb-3">Please verify you're human:</p>
                     <div className="flex justify-center">
-                      <div className="g-recaptcha" data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"></div>
+                      <div 
+                        className="g-recaptcha" 
+                        data-sitekey="6Lc21e4qAAAAAINlp32KdupAecxml8wdLYsZ3k81"
+                      ></div>
                     </div>
                   </div>
                   

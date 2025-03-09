@@ -1,66 +1,134 @@
-import sgMail from '@sendgrid/mail';
-import { serverEnv } from './env';
+import { z } from 'zod';
 
-// Initialize SendGrid with API key
-if (serverEnv.SENDGRID_API_KEY) {
-  sgMail.setApiKey(serverEnv.SENDGRID_API_KEY);
-}
+// Contact form validation schema
+export const contactFormSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+  recaptchaToken: z.string().optional(),
+});
 
-/**
- * Email template for contact form submissions
- */
-interface ContactFormEmailData {
-  name: string;
-  email: string;
-  message: string;
-  subject?: string;
-}
+export type ContactFormData = z.infer<typeof contactFormSchema>;
 
-/**
- * Sends a contact form email using SendGrid
- * 
- * @param data The contact form data
- * @returns A promise that resolves when the email is sent
- */
-export async function sendContactFormEmail(data: ContactFormEmailData): Promise<boolean> {
+// Verify reCAPTCHA token
+async function verifyRecaptcha(token: string): Promise<boolean> {
   try {
-    // Check if SendGrid API key is configured
-    if (!serverEnv.SENDGRID_API_KEY) {
-      console.error('SENDGRID_API_KEY is not configured');
+    // In production, we should only accept valid tokens
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY || '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe';
+    
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${secretKey}&response=${token}`,
+    });
+    
+    const data = await response.json() as { success: boolean };
+    return data.success;
+  } catch (error) {
+    console.error('reCAPTCHA verification error:', error);
+    return false;
+  }
+}
+
+// Send email using SendGrid
+export async function sendContactFormEmail(data: ContactFormData): Promise<boolean> {
+  try {
+    // Verify reCAPTCHA if token is provided
+    if (data.recaptchaToken) {
+      const isValidRecaptcha = await verifyRecaptcha(data.recaptchaToken);
+      if (!isValidRecaptcha) {
+        console.error('reCAPTCHA verification failed');
+        return false;
+      }
+    }
+    
+    // Get SendGrid API key from environment
+    const sendgridApiKey = process.env.SENDGRID_API_KEY;
+    if (!sendgridApiKey) {
+      console.error('SendGrid API key not found. Unable to send email.');
       return false;
     }
-
-    const { name, email, message, subject } = data;
-    const defaultSubject = 'New Contact Form Submission';
-
-    // Create the email
-    const msg = {
-      to: process.env.CONTACT_EMAIL || 'your-email@example.com', // Your email address
-      from: process.env.FROM_EMAIL || 'noreply@yourdomain.com', // Your verified sender email
-      subject: subject || defaultSubject,
-      text: `
-Name: ${name}
-Email: ${email}
-Message: ${message}
-      `,
-      html: `
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-  <h2 style="color: #333;">New Contact Form Submission</h2>
-  <p><strong>Name:</strong> ${name}</p>
-  <p><strong>Email:</strong> ${email}</p>
-  <p><strong>Message:</strong></p>
-  <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px;">
-    ${message.replace(/\n/g, '<br>')}
-  </div>
-</div>
-      `,
+    
+    // Use verified sender email from environment or fallback to the hardcoded one
+    const verifiedSender = process.env.SENDGRID_VERIFIED_SENDER || 'prateek@edoflip.com';
+    
+    // Create the raw JSON data for admin notification - exactly matching the curl format
+    const adminRawData = {
+      personalizations: [
+        {
+          to: [{ email: 'prateek@edoflip.com' }],
+          subject: `New contact form submission from ${data.name}`
+        }
+      ],
+      from: { email: verifiedSender },
+      content: [
+        {
+          type: "text/plain",
+          value: `Name: ${data.name}\nEmail: ${data.email}\n\nMessage:\n${data.message}`
+        }
+      ]
     };
-
-    // Send the email
-    await sgMail.send(msg);
-    return true;
+    
+    // Create the raw JSON data for sender confirmation - exactly matching the curl format
+    const senderRawData = {
+      personalizations: [
+        {
+          to: [{ email: data.email }],
+          subject: `Thank you for contacting Prateek`
+        }
+      ],
+      from: { email: verifiedSender },
+      content: [
+        {
+          type: "text/plain",
+          value: `Dear ${data.name},\n\nThank you for reaching out to me through my portfolio website. I've received your message and will get back to you as soon as possible.\n\nFor your reference, here's a copy of your message:\n"${data.message}"\n\nBest regards,\nPrateek`
+        }
+      ]
+    };
+    
+    // Use direct API calls with fetch - exactly matching the curl format
+    try {
+      // Send admin notification email
+      const adminResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sendgridApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(adminRawData)
+      });
+      
+      if (!adminResponse.ok) {
+        const errorText = await adminResponse.text();
+        console.error('Error sending admin email:', errorText);
+        throw new Error(`Failed to send admin email: ${errorText}`);
+      }
+      
+      // Send confirmation email to sender
+      const senderResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sendgridApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(senderRawData)
+      });
+      
+      if (!senderResponse.ok) {
+        const errorText = await senderResponse.text();
+        console.error('Error sending confirmation email:', errorText);
+        throw new Error(`Failed to send confirmation email: ${errorText}`);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error in SendGrid API call:', error);
+      throw error; // Rethrow to be caught by outer catch block
+    }
   } catch (error) {
-    console.error('Error sending contact form email:', error);
+    console.error('Error sending email:', error);
     return false;
   }
 } 
