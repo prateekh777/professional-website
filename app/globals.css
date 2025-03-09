@@ -582,3 +582,58 @@ body {
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, "Helvetica Neue", Arial, sans-serif;
 }
+
+/* Add these animation styles at the end of your globals.css file */
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutToBottom {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+[data-state=open].bottom-sheet {
+  animation: slideInFromBottom 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-state=closed].bottom-sheet {
+  animation: slideOutToBottom 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Add custom duration utility classes */
+.duration-450 {
+  transition-duration: 450ms;
+}
+
+.ease-out-custom {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Play indicator - commenting out as we don't want this overlay anymore
+.play-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+*/

@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Play } from 'lucide-react';
 import './InterestOrbits.css';
 
 // Define interest category types
@@ -69,6 +68,24 @@ export function InterestOrbits() {
   const handleCarouselItemLoad = (id: number) => {
     setLoadedCarouselItems(prev => ({ ...prev, [id]: true }));
   };
+
+  // Add useEffect to handle video autoplay when dialog opens
+  useEffect(() => {
+    if (activeCategory) {
+      // Small timeout to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const videos = document.querySelectorAll('.interest-dialog-content video') as NodeListOf<HTMLVideoElement>;
+        videos.forEach(video => {
+          video.play().catch(err => {
+            console.log('Autoplay prevented:', err);
+            // Add play button or other fallback if needed
+          });
+        });
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [activeCategory]);
 
   return (
     <>
@@ -206,15 +223,17 @@ export function InterestOrbits() {
           </div>
         </div>
         {/* Instruction text below the orbits */}
-        <div className="absolute bottom-2 left-0 right-0 text-center sm:text-left sm:left-8 sm:right-auto text-xs text-[#7B7B7B]">
-          <p className="italic">Click on sphere to know more...</p>
+        <div className="absolute bottom-2 left-0 right-0 text-center sm:text-left sm:left-8 sm:right-auto">
+          <p className="italic text-xs px-3 py-1.5 bg-white/30 backdrop-blur-[2px] inline-block rounded-full text-[#555555] border border-[#7B7B7B]/20 shadow-sm transition-opacity hover:opacity-80">
+            ✨ Click on sphere to know more...
+          </p>
         </div>
       </div>
         
       {/* Dialog for showing selected category images */}
       <Dialog open={activeCategory !== null} onOpenChange={handleCloseDialog}>
-        <DialogContent className="sm:max-w-[90vw] max-h-[90vh] overflow-auto p-5 interest-dialog-content" 
-          style={{ background: '#F8F8F8', borderColor: '#222222' }}>
+        <DialogContent className="sm:max-w-[90vw] md:max-w-[85vw] max-h-[90vh] overflow-auto p-4 sm:p-6 interest-dialog-content" 
+          style={{ background: '#F8F8F8', borderColor: '#222222', width: 'auto' }}>
           <DialogHeader>
             <DialogTitle className="text-xl capitalize mb-3" style={{ color: '#222222' }}>
               {activeCategory} Interests
@@ -224,23 +243,22 @@ export function InterestOrbits() {
           <Carousel className="w-full" opts={{ loop: true }}>
             <CarouselContent className="-ml-2 md:-ml-4">
               {activeCategory && INTERESTS_DATA[activeCategory].map((item) => (
-                <CarouselItem key={item.id} className="pl-2 md:pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                  <div className="p-1">
-                    <div className="bg-white rounded-lg overflow-hidden shadow-md p-2 h-full border border-[#7B7B7B]/10">
-                      <div className="aspect-square w-full overflow-hidden rounded-md mb-2">
+                <CarouselItem key={item.id} className="pl-2 md:pl-4 sm:basis-1/2 md:basis-1/2 lg:basis-2/5">
+                  <div className="p-1 md:p-2 h-full">
+                    <div className="bg-white rounded-lg overflow-hidden shadow-md p-2 md:p-3 h-full border border-[#7B7B7B]/10 flex flex-col">
+                      <div className="aspect-square w-full overflow-hidden rounded-md mb-2 flex-shrink-0">
                         {item.mediaType === 'video' ? (
                           <div className="video-container">
                             <video 
                               src={item.mediaUrl}
                               className="w-full h-full object-cover"
                               controls
+                              autoPlay
                               muted
                               loop
+                              preload="metadata"
                               poster={`https://via.placeholder.com/300/222222/FFFFFF?text=${item.title}`}
                             />
-                            <div className="play-indicator">
-                              <Play size={16} />
-                            </div>
                           </div>
                         ) : (
                           <div className="relative w-full h-full">
@@ -263,9 +281,9 @@ export function InterestOrbits() {
                           </div>
                         )}
                       </div>
-                      <div className="pt-1">
-                        <h3 className="font-medium text-sm mb-0.5" style={{ color: '#222222' }}>{item.title}</h3>
-                        <p className="text-xs" style={{ color: '#7B7B7B' }}>{item.description}</p>
+                      <div className="pt-1 md:pt-2 flex-grow">
+                        <h3 className="font-medium text-sm md:text-base mb-0.5 md:mb-1" style={{ color: '#222222' }}>{item.title}</h3>
+                        <p className="text-xs md:text-sm" style={{ color: '#7B7B7B' }}>{item.description}</p>
                       </div>
                     </div>
                   </div>

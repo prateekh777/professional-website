@@ -67,8 +67,9 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[80vh]">
-              <div className="flex flex-col space-y-3 p-4">
+            <DialogContent className="bottom-0 p-0 h-auto max-h-[80vh] bottom-sheet">
+              <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
+              <div className="flex flex-col space-y-3 p-4 text-center">
                 {navItems.map((item) => (
                   <DialogClose asChild key={item.path}>
                     <Link

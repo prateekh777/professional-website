@@ -16,6 +16,7 @@ import {
   Monitor,
   X,
   ArrowUpRight,
+  Play,
 } from "lucide-react";
 
 // Define the AiWork type since we're not importing it from shared schema
@@ -196,15 +197,15 @@ export default function AiWorks() {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full overflow-x-hidden">
       {/* Hero Section with animation */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={heroInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1 }}
-        className="relative bg-[#222222] overflow-hidden"
+        className="relative bg-[#222222] overflow-hidden w-full"
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto w-full">
           <div className="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:pb-28 xl:pb-32 pt-20 px-4 sm:px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -215,9 +216,9 @@ export default function AiWorks() {
             >
               <div className="flex items-center gap-4 mb-6">
                 <Brain className="h-10 w-10 text-[#F8F8F8]" />
-                <h1 className="text-5xl font-bold text-[#F8F8F8]">AI Works</h1>
+                <h1 className="text-4xl sm:text-5xl font-bold text-[#F8F8F8]">AI Works</h1>
               </div>
-              <p className="mt-3 max-w-2xl text-xl text-[#F8F8F8] font-medium sm:mt-5">
+              <p className="mt-3 max-w-2xl text-lg sm:text-xl text-[#F8F8F8] font-medium sm:mt-5">
                 A collection of AI-powered solutions I've built to solve
                 real-world problems and explore the potential of artificial
                 intelligence in everyday applications.
@@ -266,102 +267,105 @@ export default function AiWorks() {
       {/* Projects Grid with staggered animation */}
       <div
         ref={sectionRef}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
+        className="w-full px-4 sm:px-6 lg:px-8 py-24 bg-[rgb(200,190,170)]"
       >
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid gap-12 md:grid-cols-2"
-        >
-          {aiWorksData.map((work, i) => (
-            <motion.div
-              key={work.id}
-              custom={i}
-              variants={fadeInUp}
-              whileHover={{
-                y: -10,
-                transition: { duration: 0.3 },
-              }}
-              className="h-full"
-              onMouseEnter={() => setHoveredCard(work.id)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
-              <Card className="h-full flex flex-col overflow-hidden bg-[#222222] border-none shadow-xl">
-                <div className="relative overflow-hidden">
-                  {work.mediaType === "video" ? (
-                    <motion.video
-                      src={work.imageUrl}
-                      className="aspect-video w-full object-cover transition-transform duration-700"
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      animate={{
-                        scale: hoveredCard === work.id ? 1.05 : 1,
-                      }}
-                    />
-                  ) : (
-                    <motion.img
-                      src={work.imageUrl}
-                      alt={work.title}
-                      className="aspect-video w-full object-cover transition-transform duration-700"
-                      animate={{
-                        scale: hoveredCard === work.id ? 1.05 : 1,
-                      }}
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#222222]/60" />
-                  <div className="absolute bottom-4 left-4 flex items-center gap-2">
-                    <div className="bg-[#F8F8F8] p-2 rounded-full">
-                      <div className="text-[#222222]">
-                        {getProjectIcon(work.title)}
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid gap-8 md:grid-cols-2"
+          >
+            {aiWorksData.map((work, i) => (
+              <motion.div
+                key={work.id}
+                custom={i}
+                variants={fadeInUp}
+                whileHover={{
+                  y: -10,
+                  transition: { duration: 0.3 },
+                }}
+                className="h-full"
+                onMouseEnter={() => setHoveredCard(work.id)}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
+                <Card className="h-full flex flex-col overflow-hidden bg-[#222222] border-none shadow-xl">
+                  <div className="relative overflow-hidden">
+                    {work.mediaType === "video" ? (
+                      <div className="relative aspect-video w-full overflow-hidden">
+                        <motion.video
+                          src={work.imageUrl}
+                          className="aspect-video w-full object-cover transition-transform duration-700"
+                          controls
+                          muted
+                          preload="metadata"
+                          animate={{
+                            scale: hoveredCard === work.id ? 1.05 : 1,
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <motion.img
+                        src={work.imageUrl}
+                        alt={work.title}
+                        className="aspect-video w-full object-cover transition-transform duration-700"
+                        animate={{
+                          scale: hoveredCard === work.id ? 1.05 : 1,
+                        }}
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#222222]/60" />
+                    <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                      <div className="bg-[#F8F8F8] p-2 rounded-full">
+                        <div className="text-[#222222]">
+                          {getProjectIcon(work.title)}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-2xl font-bold text-[#F8F8F8]">
-                      {work.title}
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-1 pt-0">
-                  <div className="mb-3">
-                    <p className="text-[#F8F8F8] font-medium leading-relaxed line-clamp-3">
-                      {work.description}
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-[#F8F8F8]/80 hover:text-[#F8F8F8] hover:bg-transparent p-0 h-auto mt-1 flex items-center"
-                      onClick={() => setActiveDescription(work)}
-                    >
-                      Read More <ArrowUpRight className="ml-1 h-3 w-3" />
-                    </Button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {work.technologies?.map((tech) => (
-                      <Badge
-                        key={tech}
-                        variant="secondary"
-                        className="bg-[#F8F8F8]/10 text-[#F8F8F8] hover:bg-[#F8F8F8]/20"
+                  <CardHeader className="pb-2">
+                    <div className="flex justify-between items-start">
+                      <CardTitle className="text-xl sm:text-2xl font-bold text-[#F8F8F8]">
+                        {work.title}
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1 pt-0">
+                    <div className="mb-3">
+                      <p className="text-[#F8F8F8] font-medium leading-relaxed line-clamp-3">
+                        {work.description}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-[#F8F8F8]/80 hover:text-[#F8F8F8] hover:bg-transparent p-0 h-auto mt-1 flex items-center"
+                        onClick={() => setActiveDescription(work)}
                       >
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
+                        Read More <ArrowUpRight className="ml-1 h-3 w-3" />
+                      </Button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {work.technologies?.map((tech) => (
+                        <Badge
+                          key={tech}
+                          variant="secondary"
+                          className="bg-[#F8F8F8]/10 text-[#F8F8F8] hover:bg-[#F8F8F8]/20"
+                        >
+                          {tech}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
 
       {/* AI-Driven Solutions Impact Section */}
-      <div className="bg-[#222222] py-24">
+      <div className="bg-[#222222] py-24 w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -370,10 +374,10 @@ export default function AiWorks() {
             transition={{ duration: 0.7 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-[#F8F8F8] mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#F8F8F8] mb-4">
               AI-Driven Solutions
             </h2>
-            <p className="text-xl text-[#F8F8F8]/80 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl text-[#F8F8F8]/80 max-w-3xl mx-auto">
               Each of these projects started as an idea to solve a specific
               problem. While they are still evolving, they demonstrate how AI
               can be leveraged to create practical and innovative solutions for
@@ -467,7 +471,7 @@ export default function AiWorks() {
       </div>
 
       {/* Collaboration Call-to-Action Section */}
-      <div className="bg-gradient-to-b from-[#1A1A1A] to-[#111111] py-24">
+      <div className="bg-gradient-to-b from-[#1A1A1A] to-[#111111] py-24 w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -476,10 +480,10 @@ export default function AiWorks() {
             transition={{ duration: 0.7 }}
             className="text-center"
           >
-            <h2 className="text-4xl font-bold text-[#F8F8F8] mb-6">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#F8F8F8] mb-6">
               Interested in AI collaboration?
             </h2>
-            <p className="text-xl text-[#F8F8F8]/80 max-w-5xl mx-auto mb-8 whitespace-nowrap">
+            <p className="text-lg sm:text-xl text-[#F8F8F8]/80 max-w-5xl mx-auto mb-8">
               Let's explore how we can leverage AI to solve your challenges and
               create innovative solutions together.
             </p>
@@ -549,11 +553,8 @@ export default function AiWorks() {
                         <video
                           src={activeDescription.imageUrl}
                           className="w-full h-full object-cover"
-                          autoPlay
-                          muted
-                          loop
-                          playsInline
                           controls
+                          autoPlay
                         />
                       ) : (
                         <img

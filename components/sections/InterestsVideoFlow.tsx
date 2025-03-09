@@ -8,6 +8,26 @@ export function InterestsVideoFlow() {
   const [activeSection, setActiveSection] = useState<'spirituality' | 'science' | 'startups' | null>(null);
   const [videoError, setVideoError] = useState(false);
 
+  // Text shadow styles for better readability on video backgrounds
+  const textShadowStyles = `
+  .text-shadow {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  }
+  `;
+
+  // Add the text shadow styles to the document
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const styleTag = document.createElement('style');
+      styleTag.innerHTML = textShadowStyles;
+      document.head.appendChild(styleTag);
+      
+      return () => {
+        document.head.removeChild(styleTag);
+      };
+    }
+  }, []);
+
   useEffect(() => {
     const checkScreenSize = () => {
       setIsSmallScreen(window.innerWidth < 768);
@@ -80,10 +100,24 @@ export function InterestsVideoFlow() {
             </div>
           )}
           
+          {/* Title Overlay - Added for mobile */}
+          <motion.div 
+            className="absolute top-2 left-0 right-0 z-20 text-center px-2"
+            initial={{ y: -10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.7 }}
+          >
+            <h2 className="text-white text-sm font-bold mb-0.5 text-shadow">Inner & Outer Worlds</h2>
+            <p className="text-white/80 text-xs text-shadow">A journey through interconnected dimensions</p>
+          </motion.div>
+          
           {/* Simple overlay for the video */}
-          <div className="absolute bottom-2 left-0 right-0 text-center z-20">
-            <p className="text-white/90 text-xs italic">
+          <div className="absolute bottom-2 left-0 right-0 text-center z-20 px-2">
+            <p className="text-white/90 text-xs italic text-shadow">
               "Spirituality → Science → Startups"
+            </p>
+            <p className="text-white/80 text-[10px] italic mt-0.5 text-shadow">
+              Inner wisdom + scientific approach = meaningful impact
             </p>
           </div>
         </div>
@@ -200,20 +234,20 @@ export function InterestsVideoFlow() {
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.7 }}
         >
-          <h2 className="text-white text-2xl font-bold mb-1">The Synthesis of Inner and Outer Worlds</h2>
-          <p className="text-white/80 text-sm">A visual journey through interconnected dimensions</p>
+          <h2 className="text-white text-2xl font-bold mb-1 text-shadow">The Synthesis of Inner and Outer Worlds</h2>
+          <p className="text-white/80 text-sm text-shadow">A visual journey through interconnected dimensions</p>
         </motion.div>
         
         {/* Footer text */}
         <div className="absolute bottom-4 left-0 right-0 text-center z-20">
-          <p className="text-white/90 text-sm italic">
+          <p className="text-white/90 text-sm italic text-shadow">
             "The synthesis of inner wisdom and scientific approach creates meaningful impact through entrepreneurship."
           </p>
         </div>
       </div>
       
-      {/* Three small cards in a row */}
-      <div className="flex justify-center gap-6 w-full max-w-screen-lg px-4">
+      {/* Three small cards in a row - Added pb-8 for more bottom padding in desktop view */}
+      <div className="flex justify-center gap-6 w-full max-w-screen-lg px-4 pb-8">
         {/* Spirituality */}
         <motion.div
           className="bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-md cursor-pointer hover:shadow-lg"

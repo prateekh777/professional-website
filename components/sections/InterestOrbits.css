@@ -136,22 +136,14 @@
   position: relative;
   width: 100%;
   height: 100%;
+  aspect-ratio: 1/1;
+  overflow: hidden;
 }
 
-.play-indicator {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: rgba(255, 255, 255, 0.8);
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  pointer-events: none;
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Carousel controls */
@@ -189,18 +181,48 @@
   border: none !important;
   border-radius: 1rem !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
-  max-width: min(90vw, 1200px) !important;
   width: auto !important;
+  max-width: min(90vw, 1000px) !important;
   margin: 0 auto !important;
-  padding: 1.5rem !important;
+  padding: 1.25rem !important;
   position: fixed !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   z-index: 100 !important;
-  max-height: min(80vh, 700px) !important;
+  max-height: min(85vh, 700px) !important;
   overflow-y: auto !important;
   height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Desktop specific dialog content styling */
+@media (min-width: 768px) {
+  .interest-dialog-content {
+    max-width: min(85vw, 1200px) !important;
+    padding: 1.75rem !important;
+  }
+  
+  .interest-item-card {
+    max-width: 450px !important;
+    margin: 0 auto !important;
+  }
+  
+  /* Enhanced carousel item styling for desktop */
+  .carousel-item-desktop {
+    padding: 0.75rem !important;
+  }
+  
+  /* Larger title and description for desktop */
+  .carousel-item-desktop h3 {
+    font-size: 1rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .carousel-item-desktop p {
+    font-size: 0.875rem !important;
+  }
 }
 
 /* Improve scrollbar appearance */
@@ -308,4 +330,46 @@
 .interest-item-description {
   color: #7B7B7B;
   font-size: 0.75rem;
+}
+
+/* Adjust carousel item sizing for better responsiveness */
+@media (max-width: 640px) {
+  .interest-dialog-content {
+    padding: 1rem !important;
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+  }
+}
+
+/* Fix for consistent card heights */
+.carousel-content {
+  display: flex;
+  height: 100%;
+}
+
+.carousel-item {
+  height: 100%;
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .carousel-item > div {
+    height: 100%;
+  }
+  
+  .carousel-item h3 {
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .carousel-item p {
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 } 
