@@ -32,7 +32,7 @@ type EmailData = {
 /**
  * Sends an email using SendGrid
  */
-export async function sendEmail(emailData: EmailData): Promise<{ success: boolean; message: string }> {
+export async function sendEmail(emailData: EmailData): Promise<{ success: boolean; message: string; details?: any }> {
   console.log('📧 ===== SEND EMAIL ATTEMPT =====');
   
   // Log the email data for debugging
@@ -132,12 +132,12 @@ export async function sendEmail(emailData: EmailData): Promise<{ success: boolea
 /**
  * Sends a contact form submission notification
  */
-export async function sendContactFormEmail(name: string, email: string, message: string): Promise<{ success: boolean; message: string }> {
+export async function sendContactFormEmail(name: string, email: string, messageContent: string): Promise<{ success: boolean; message: string; adminResult?: any; userResult?: any }> {
   console.log('📝 ===== CONTACT FORM EMAIL PROCESS =====');
   console.log(`📝 Processing contact form submission for: ${name} (${email})`);
   
   // Verify sender email is configured
-  const senderEmail = serverEnv.EMAIL_FROM || 'prateek@edoflip.com';
+  const senderEmail = serverEnv.EMAIL_FROM || 'noreply@prateekhakay.com';
   const adminEmail = serverEnv.EMAIL_TO || 'prateek@edoflip.com';
   
   console.log(`📝 Using sender email: ${senderEmail}`);
@@ -156,7 +156,7 @@ export async function sendContactFormEmail(name: string, email: string, message:
       Email: ${email}
       
       Message:
-      ${message}
+      ${messageContent}
     `,
   });
   
@@ -175,7 +175,7 @@ export async function sendContactFormEmail(name: string, email: string, message:
       
       For your records, here's a copy of your message:
       
-      ${message}
+      ${messageContent}
       
       Best regards,
       Prateek Hakay
@@ -185,16 +185,16 @@ export async function sendContactFormEmail(name: string, email: string, message:
   console.log('📝 User confirmation result:', userConfirmation);
   
   const success = adminNotification.success && userConfirmation.success;
-  const message = success 
+  const resultMessage = success 
     ? 'Emails sent successfully' 
     : `Failed to send emails: ${adminNotification.message || 'Unknown admin email error'}, ${userConfirmation.message || 'Unknown user email error'}`;
   
-  console.log(`📝 Overall email sending ${success ? 'succeeded' : 'failed'}: ${message}`);
+  console.log(`📝 Overall email sending ${success ? 'succeeded' : 'failed'}: ${resultMessage}`);
   console.log('📝 ===== END CONTACT FORM EMAIL PROCESS =====');
   
   return {
     success,
-    message,
+    message: resultMessage,
     adminResult: adminNotification,
     userResult: userConfirmation
   };
