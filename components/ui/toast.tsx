@@ -209,10 +209,11 @@ const reducer = (state: State, action: Action): State => {
           toastTimeouts.delete(toastId)
         }
       } else {
-        for (const [id, timeout] of toastTimeouts.entries()) {
+        // Convert Map entries to array before iterating to avoid TypeScript error
+        Array.from(toastTimeouts.entries()).forEach(([id, timeout]) => {
           clearTimeout(timeout)
           toastTimeouts.delete(id)
-        }
+        })
       }
 
       return {
