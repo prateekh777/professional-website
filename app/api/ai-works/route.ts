@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
 
     // Transform S3 URLs for media fields
     const transformedAiWorks = aiWorks.map((aiWork: AiWork) =>
-      formatItemUrls(aiWork, ["imageUrl"])
+      formatItemUrls(aiWork)
     );
 
     // Return the AI works
