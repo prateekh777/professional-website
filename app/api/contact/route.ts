@@ -142,8 +142,14 @@ export async function POST(request: Request) {
     
     if (!emailResult.success) {
       console.error('❌ Email sending failed:', emailResult.message);
-      console.error('❌ Admin email result:', emailResult.adminResult);
-      console.error('❌ User email result:', emailResult.userResult);
+      
+      if (emailResult.adminResult) {
+        console.error('❌ Admin email result:', emailResult.adminResult);
+      }
+      
+      if (emailResult.userResult) {
+        console.error('❌ User email result:', emailResult.userResult);
+      }
       
       // In development, we might want to continue anyway
       if (serverEnv.NODE_ENV === 'development') {
@@ -204,4 +210,4 @@ export async function POST(request: Request) {
   } finally {
     console.log('📨 ===== END CONTACT FORM SUBMISSION =====');
   }
-} 
+}
