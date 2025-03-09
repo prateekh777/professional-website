@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     // Filter by technology if specified
     if (query.technology) {
       aiWorks = aiWorks.filter((aiWork: AiWork) =>
-        aiWork.technologies.includes(query.technology as any)
+        aiWork.technologies && aiWork.technologies.includes(query.technology as any)
       );
     }
 
