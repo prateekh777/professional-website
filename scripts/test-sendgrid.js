@@ -4,6 +4,9 @@
 // Load environment variables from .env.local
 require('dotenv').config({ path: '.env.local' });
 
+// Import native fetch for Node.js environments
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+
 /**
  * This script tests SendGrid email functionality by sending a test email
  */

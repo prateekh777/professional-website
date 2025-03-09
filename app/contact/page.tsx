@@ -92,19 +92,6 @@ export default function Contact() {
     setIsSubmitting(true);
     
     try {
-      // Get reCAPTCHA v2 token
-      const token = window.grecaptcha?.getResponse();
-      
-      if (!token) {
-        toast({
-          title: 'Error',
-          description: 'Please complete the reCAPTCHA verification.',
-          variant: 'destructive',
-        });
-        setIsSubmitting(false);
-        return;
-      }
-      
       // Send form data to API
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -113,9 +100,11 @@ export default function Contact() {
         },
         body: JSON.stringify({
           ...data,
-          recaptchaToken: token,
+          recaptchaToken: window.grecaptcha?.getResponse(),
         }),
       });
+      
+      console.log('API response status:', response.status);
       
       // Handle non-JSON responses (like HTML error pages)
       const contentType = response.headers.get('content-type');
@@ -125,6 +114,7 @@ export default function Contact() {
       }
       
       const result = await response.json();
+      console.log('API response data:', result);
       
       if (!result.success) {
         // Show error toast

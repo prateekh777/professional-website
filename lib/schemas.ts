@@ -32,6 +32,7 @@ export const AiWorkSchema = z.object({
   image: z.string().optional(),
   url: z.string().optional(),
   tags: z.array(z.string()).optional(),
+  technologies: z.array(z.string()).optional(),
   date: z.string().optional(),
   featured: z.boolean().optional(),
 });
