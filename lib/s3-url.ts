@@ -8,22 +8,27 @@ import { serverEnv } from './env';
 const bucketName = serverEnv.AWS_S3_BUCKET || '';
 const region = serverEnv.AWS_REGION || 'us-east-1';
 
+// Base URL for media files
+const baseMediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL || '';
+
 /**
- * Ensures a URL is a full S3 URL
- * If the input is already a full URL (starts with http), it returns it unchanged
- * If the input is a relative path, it converts it to a full S3 URL
- * 
- * @param path The path or URL of the media file
- * @returns A full URL to the media file
+ * Get the full URL for a media file
+ * @param path The path to the media file
+ * @returns The full URL to the media file
  */
-export function getMediaUrl(path: string | undefined | null): string {
+export function getMediaUrl(path: string): string {
   if (!path) return '';
   
-  // If it's already a full URL, return it as is
-  if (path.startsWith('http')) return path;
+  // If the path is already a full URL, return it as is
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
   
-  // If it's a relative path, convert it to an S3 URL
-  return `https://${bucketName}.s3.${region}.amazonaws.com/${path.startsWith('/') ? path.substring(1) : path}`;
+  // Remove leading slash if present
+  const cleanPath = path.startsWith('/') ? path.substring(1) : path;
+  
+  // Combine base URL with path
+  return `${baseMediaUrl}/${cleanPath}`;
 }
 
 /**
@@ -41,30 +46,37 @@ export function formatMediaUrls<T extends Record<string, any>>(
   
   return mediaItems.map(item => ({
     ...item,
-    [urlField]: getMediaUrl(item[urlField] as string | undefined | null)
+    [urlField]: getMediaUrl(item[urlField] ? String(item[urlField]) : '')
   }));
 }
 
 /**
- * Formats an object to ensure all specified URL fields are full S3 URLs
- * 
- * @param item The object containing URL fields
- * @param urlFields Array of field names that contain URLs
- * @returns The same object with all specified URL fields converted to full S3 URLs
+ * Format all image URLs in an object
+ * @param item The object containing image URLs
+ * @returns The object with formatted image URLs
  */
-export function formatItemUrls<T extends Record<string, any>>(
-  item: T | undefined | null,
-  urlFields: (keyof T)[]
-): T | null {
-  if (!item) return null;
+export function formatItemUrls<T extends Record<string, any>>(item: T): T {
+  if (!item) return item;
   
-  const formattedItem = { ...item };
+  const result = { ...item } as Record<string, any>;
   
-  urlFields.forEach(field => {
-    if (field in formattedItem) {
-      (formattedItem as any)[field] = getMediaUrl((formattedItem as any)[field] as string | undefined | null);
-    }
-  });
+  // Process image fields
+  if ('image' in result && result.image) {
+    result.image = getMediaUrl(String(result.image));
+  }
   
-  return formattedItem;
+  if ('coverImage' in result && result.coverImage) {
+    result.coverImage = getMediaUrl(String(result.coverImage));
+  }
+  
+  if ('thumbnail' in result && result.thumbnail) {
+    result.thumbnail = getMediaUrl(String(result.thumbnail));
+  }
+  
+  // Process arrays of images
+  if ('images' in result && result.images && Array.isArray(result.images)) {
+    result.images = result.images.map((img: string) => getMediaUrl(img));
+  }
+  
+  return result as T;
 }

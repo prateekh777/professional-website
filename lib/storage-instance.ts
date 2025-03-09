@@ -1,15 +1,18 @@
-import { MongoDBStorage } from './storage';
-
 /**
- * Singleton instance of the MongoDB storage class
- * 
- * This ensures that we only create one instance of the storage class
- * throughout the application, which helps with connection pooling
- * and overall performance.
+ * Storage instance for file operations
+ * This is a placeholder implementation that can be replaced with actual storage logic
  */
 
-// Create a singleton instance of the storage class
-const storageInstance = new MongoDBStorage();
+const storageInstance = {
+  // Placeholder method for getting files
+  getFiles: async (path: string) => {
+    return [];
+  },
+  
+  // Placeholder method for getting a file
+  getFile: async (path: string) => {
+    return null;
+  }
+};
 
-// Export the singleton instance
 export default storageInstance; 

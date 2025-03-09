@@ -35,6 +35,11 @@ export async function GET(request: NextRequest) {
     // Get the case studies directory
     const caseStudiesDirectory = path.join(process.cwd(), 'content/case-studies');
     
+    // Create the directory if it doesn't exist (for deployment)
+    if (!fs.existsSync(caseStudiesDirectory)) {
+      fs.mkdirSync(caseStudiesDirectory, { recursive: true });
+    }
+    
     // If a slug is provided, return a single case study
     if (slug) {
       const fullPath = path.join(caseStudiesDirectory, `${slug}.md`);
@@ -58,7 +63,7 @@ export async function GET(request: NextRequest) {
       const contentHtml = processedContent.toString();
       
       // Create the case study object
-      const transformedCaseStudy: CaseStudy | null = {
+      const caseStudy = {
         slug,
         title: data.title || '',
         description: data.description || '',
@@ -71,52 +76,72 @@ export async function GET(request: NextRequest) {
       };
       
       // Transform image URLs in actions
-      if (
-        transformedCaseStudy && 
-        transformedCaseStudy.actions && 
-        transformedCaseStudy.actions.length > 0
-      ) {
-        transformedCaseStudy.actions = transformedCaseStudy.actions.map(
-          (action) => ({
+      if (caseStudy.actions && caseStudy.actions.length > 0) {
+        caseStudy.actions = caseStudy.actions.map(
+          (action: any) => ({
             ...action,
             icon: action.icon || undefined,
           })
         );
       }
       
-      return NextResponse.json(transformedCaseStudy);
+      return NextResponse.json(caseStudy);
     }
     
     // Otherwise, return all case studies
-    const fileNames = fs.readdirSync(caseStudiesDirectory);
+    let fileNames: string[] = [];
+    
+    try {
+      fileNames = fs.readdirSync(caseStudiesDirectory);
+    } catch (error) {
+      console.error('Error reading case studies directory:', error);
+      // Return empty array if directory doesn't exist or can't be read
+      return NextResponse.json([]);
+    }
+    
     const allCaseStudies = fileNames
       .filter((fileName) => fileName.endsWith('.md'))
       .map((fileName) => {
-        // Remove ".md" from file name to get slug
-        const slug = fileName.replace(/\.md$/, '');
-        
-        // Read markdown file as string
-        const fullPath = path.join(caseStudiesDirectory, fileName);
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-        
-        // Parse front matter
-        const { data } = matter(fileContents);
-        
-        // Return case study data
-        return {
-          slug,
-          title: data.title || '',
-          description: data.description || '',
-          date: data.date || '',
-          coverImage: data.coverImage || '',
-          tags: data.tags || [],
-          featured: data.featured || false,
-        };
+        try {
+          // Remove ".md" from file name to get slug
+          const slug = fileName.replace(/\.md$/, '');
+          
+          // Read markdown file as string
+          const fullPath = path.join(caseStudiesDirectory, fileName);
+          const fileContents = fs.readFileSync(fullPath, 'utf8');
+          
+          // Parse front matter
+          const { data } = matter(fileContents);
+          
+          // Return case study data
+          return {
+            slug,
+            title: data.title || '',
+            description: data.description || '',
+            date: data.date || '',
+            coverImage: data.coverImage || '',
+            tags: data.tags || [],
+            featured: data.featured || false,
+          };
+        } catch (error) {
+          console.error(`Error processing file ${fileName}:`, error);
+          return null;
+        }
       })
+      .filter(Boolean) // Remove null entries
       // Sort case studies by date in descending order
-      .sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
+      .sort((a, b) => {
+        if (!a || !b || !a.date || !b.date) return 0;
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      });
     
-    return NextResponse.json(allCaseStudies);
+    // Filter by featured if requested
+    const { featured } = querySchema.parse(Object.fromEntries(searchParams));
+    const filteredCaseStudies = featured 
+      ? allCaseStudies.filter(study => study && study.featured) 
+      : allCaseStudies;
+    
+    return NextResponse.json(filteredCaseStudies);
   } catch (error) {
     console.error('Error fetching case studies:', error);
     return NextResponse.json(
