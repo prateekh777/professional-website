@@ -22,4 +22,41 @@ export const CaseStudySchema = z.object({
   actions: z.array(ActionSchema).optional(),
 });
 
-export type CaseStudy = z.infer<typeof CaseStudySchema>; 
+export type CaseStudy = z.infer<typeof CaseStudySchema>;
+
+// Define the AiWork schema
+export const AiWorkSchema = z.object({
+  id: z.string().optional(),
+  title: z.string(),
+  description: z.string(),
+  image: z.string().optional(),
+  url: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  date: z.string().optional(),
+  featured: z.boolean().optional(),
+});
+
+export type AiWork = z.infer<typeof AiWorkSchema>;
+
+// Define the Section schema
+export const SectionSchema = z.object({
+  id: z.string().optional(),
+  title: z.string(),
+  subtitle: z.string().optional(),
+  content: z.string().optional(),
+  image: z.string().optional(),
+  order: z.number().optional(),
+  type: z.string().optional(),
+  featured: z.boolean().optional(),
+  buttons: z.array(ActionSchema).optional(),
+});
+
+export type Section = z.infer<typeof SectionSchema>;
+
+// Schema for inserting a new section
+export const insertSectionSchema = SectionSchema.omit({ id: true });
+
+// Schema for updating an existing section
+export const updateSectionSchema = SectionSchema.partial().extend({
+  id: z.string(),
+}); 

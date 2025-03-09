@@ -22,6 +22,9 @@ export const serverEnv = {
   SENDGRID_API_KEY: process.env.SENDGRID_API_KEY || '',
   SENDGRID_VERIFIED_SENDER: process.env.SENDGRID_VERIFIED_SENDER || 'prateek@edoflip.com',
   
+  // reCAPTCHA
+  RECAPTCHA_SECRET_KEY: process.env.RECAPTCHA_SECRET_KEY || '',
+  
   // Database
   MONGODB_URI: process.env.MONGODB_URI,
   
