@@ -63,6 +63,8 @@ type EmailData = {
  */
 export async function sendContactFormEmail(name: string, email: string, message: string, recaptchaToken?: string): Promise<{ success: boolean; message: string; adminResult?: any; userResult?: any }> {
   try {
+    console.log('Starting email sending process...');
+    
     // Verify reCAPTCHA if token is provided
     if (recaptchaToken) {
       const isValidRecaptcha = await verifyRecaptcha(recaptchaToken);
@@ -72,25 +74,27 @@ export async function sendContactFormEmail(name: string, email: string, message:
       }
     }
     
-    // Check if SendGrid is properly configured
+    // Check if SendGrid API key is properly configured
     if (!sendgridApiKey) {
       console.error('SendGrid API key not found. Unable to send email.');
       return { success: false, message: 'SendGrid API key not configured' };
     }
     
-    // SENDGRID IMPLEMENTATION
+    console.log(`SendGrid API key found: ${sendgridApiKey.substring(0, 5)}...${sendgridApiKey.substring(sendgridApiKey.length - 3)}`);
     
     // Use verified sender email from environment or fallback to the hardcoded one
     const verifiedSender = serverEnv.EMAIL_FROM || 'prateek@edoflip.com';
-    console.log(`Using verified sender email: ${verifiedSender}`);
+    const recipientEmail = serverEnv.EMAIL_TO || 'prateek@edoflip.com';
     
-    // 1. Prepare notification email to Prateek
-    // Create the raw JSON data for admin notification
-    const adminRawData = {
+    console.log(`Using sender email: ${verifiedSender}`);
+    console.log(`Using recipient email: ${recipientEmail}`);
+    
+    // Create admin notification email data
+    const adminEmailData = {
       personalizations: [
         {
-          to: [{ email: serverEnv.EMAIL_TO || 'prateek@edoflip.com' }],
-          subject: `New contact form submission from ${name}`
+          to: [{ email: recipientEmail }],
+          subject: `New Contact Form Submission from ${name}`
         }
       ],
       from: { email: verifiedSender },
@@ -107,8 +111,8 @@ export async function sendContactFormEmail(name: string, email: string, message:
       ]
     };
     
-    // Create the raw JSON data for sender confirmation
-    const senderRawData = {
+    // Create user confirmation email data
+    const userEmailData = {
       personalizations: [
         {
           to: [{ email: email }],
@@ -128,66 +132,78 @@ export async function sendContactFormEmail(name: string, email: string, message:
       ]
     };
     
-    // Log the preparations for debugging
-    console.log('Preparing emails with the following configurations:');
-    console.log('Admin notification recipient:', serverEnv.EMAIL_TO || 'prateek@edoflip.com');
-    console.log('Confirmation email recipient:', email);
-    console.log('Using sender email:', verifiedSender);
-    
-    // Use direct API calls with fetch instead of the SendGrid library
+    // Send admin notification email
+    console.log('Sending admin notification email...');
+    let adminResult;
     try {
-      console.log('Sending admin notification email...');
       const adminResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${sendgridApiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(adminRawData)
+        body: JSON.stringify(adminEmailData)
       });
       
       if (!adminResponse.ok) {
         const errorData = await adminResponse.json();
         console.error('Error sending admin email:', errorData);
+        adminResult = { success: false, error: errorData };
         throw new Error(`Failed to send admin email: ${JSON.stringify(errorData)}`);
       }
       
-      console.log('Admin notification email sent successfully');
-      
-      console.log('Sending confirmation email to sender...');
-      const senderResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+      adminResult = { success: true, statusCode: adminResponse.status };
+      console.log('Admin notification email sent successfully!');
+    } catch (error: any) {
+      console.error('Error sending admin email:', error.message);
+      return { 
+        success: false, 
+        message: `Failed to send admin email: ${error.message}`,
+        adminResult: adminResult || { success: false, error: error.message }
+      };
+    }
+    
+    // Send user confirmation email
+    console.log('Sending confirmation email to user...');
+    let userResult;
+    try {
+      const userResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${sendgridApiKey}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(senderRawData)
+        body: JSON.stringify(userEmailData)
       });
       
-      if (!senderResponse.ok) {
-        const errorData = await senderResponse.json();
+      if (!userResponse.ok) {
+        const errorData = await userResponse.json();
         console.error('Error sending confirmation email:', errorData);
+        userResult = { success: false, error: errorData };
         throw new Error(`Failed to send confirmation email: ${JSON.stringify(errorData)}`);
       }
       
-      console.log('Confirmation email sent successfully');
-      
-      console.log('Both emails sent successfully via SendGrid');
-      return { 
-        success: true, 
-        message: 'Emails sent successfully',
-        adminResult: { success: true },
-        userResult: { success: true }
-      };
+      userResult = { success: true, statusCode: userResponse.status };
+      console.log('Confirmation email sent successfully!');
     } catch (error: any) {
-      console.error('Error in direct SendGrid API call:', error);
-      throw error; // Rethrow to be caught by outer catch block
+      console.error('Error sending confirmation email:', error.message);
+      return { 
+        success: false, 
+        message: `Failed to send confirmation email: ${error.message}`,
+        adminResult,
+        userResult: userResult || { success: false, error: error.message }
+      };
     }
+    
+    console.log('Both emails sent successfully!');
+    return { 
+      success: true, 
+      message: 'Emails sent successfully',
+      adminResult,
+      userResult
+    };
   } catch (error: any) {
-    console.error('Error sending email:', error);
-    if (error.response) {
-      console.error('SendGrid error response:', error.response.body);
-    }
+    console.error('Error in email sending process:', error);
     return { 
       success: false, 
       message: error.message || 'Failed to send email',
