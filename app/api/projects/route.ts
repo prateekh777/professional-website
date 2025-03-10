@@ -2,63 +2,37 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
+import { ZodError } from "zod";
 import storageInstance from "@/lib/storage-instance";
-import { Project } from "@/lib/schemas";
+import { Project, ProjectSchema } from "@/lib/schemas";
 import { getMediaUrl, formatItemUrls } from "@/lib/s3-url";
-
-// Query parameters schema
-const querySchema = z.object({
-  featured: z
-    .string()
-    .optional()
-    .transform((val) => val === "true"),
-});
-
-type QueryParams = z.infer<typeof querySchema>;
 
 /**
  * GET /api/projects
  *
- * Returns all projects or featured projects if the featured query parameter is true
+ * Get all projects or featured projects
  */
 export async function GET(request: NextRequest) {
   try {
     // Parse query parameters
     const { searchParams } = new URL(request.url);
-    const featuredParam = searchParams.get("featured");
+    const featured = searchParams.get("featured");
+    
+    // Convert featured string parameter to boolean if present
+    const featuredBool = featured ? featured === 'true' : undefined;
 
-    const query: QueryParams = querySchema.parse({
-      featured: featuredParam || undefined,
-    });
-
-    // Get projects from the database
-    const projects = await storageInstance.getProjects(
-      query.featured !== undefined ? query.featured : undefined
-    );
+    // Get projects from storage
+    const projects = await storageInstance.getProjects(featuredBool);
 
     // Transform S3 URLs for media fields
     const transformedProjects = projects.map((project: Project) =>
-      formatItemUrls(project, ["imageUrl", "thumbnailUrl", "videoUrl"])
+      formatItemUrls(project)
     );
 
-    // Return the projects
-    return NextResponse.json(transformedProjects);
+    // Return projects
+    return NextResponse.json({ projects: transformedProjects });
   } catch (error) {
-    console.error("Error getting projects:", error);
-
-    // Handle validation errors
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid query parameters", details: error.errors },
-        { status: 400 }
-      );
-    }
-
-    // Return a generic error response
-    return NextResponse.json(
-      { error: "Failed to get projects" },
-      { status: 500 }
-    );
+    console.error('Error in GET /api/projects:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

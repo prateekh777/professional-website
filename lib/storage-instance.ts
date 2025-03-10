@@ -29,7 +29,7 @@ const storageInstance = {
   },
   
   // Placeholder method for getting projects
-  getProjects: async (category?: string, featured?: boolean) => {
+  getProjects: async (featured?: boolean) => {
     // Return empty array as placeholder
     return [] as Project[];
   },
@@ -59,6 +59,21 @@ const storageInstance = {
       id: 'placeholder-id',
       ...section,
     } as Section;
+  },
+  
+  // Placeholder method for updating a section
+  updateSection: async (id: string, section: Partial<Section>) => {
+    // Return a placeholder updated section
+    return {
+      id,
+      ...section,
+    } as Section;
+  },
+  
+  // Placeholder method for deleting a section
+  deleteSection: async (id: string) => {
+    // Return success placeholder
+    return true;
   },
   
   // Placeholder method for getting interests

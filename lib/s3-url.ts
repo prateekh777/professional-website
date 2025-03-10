@@ -53,29 +53,42 @@ export function formatMediaUrls<T extends Record<string, any>>(
 /**
  * Format all image URLs in an object
  * @param item The object containing image URLs
+ * @param urlFields Optional array of field names to format
  * @returns The object with formatted image URLs
  */
-export function formatItemUrls<T extends Record<string, any>>(item: T): T {
+export function formatItemUrls<T extends Record<string, any>>(
+  item: T,
+  urlFields?: string[]
+): T {
   if (!item) return item;
   
   const result = { ...item } as Record<string, any>;
   
-  // Process image fields
-  if ('image' in result && result.image) {
-    result.image = getMediaUrl(String(result.image));
-  }
-  
-  if ('coverImage' in result && result.coverImage) {
-    result.coverImage = getMediaUrl(String(result.coverImage));
-  }
-  
-  if ('thumbnail' in result && result.thumbnail) {
-    result.thumbnail = getMediaUrl(String(result.thumbnail));
-  }
-  
-  // Process arrays of images
-  if ('images' in result && result.images && Array.isArray(result.images)) {
-    result.images = result.images.map((img: string) => getMediaUrl(img));
+  if (urlFields && urlFields.length > 0) {
+    // Format specified URL fields
+    urlFields.forEach(field => {
+      if (field in result && result[field]) {
+        result[field] = getMediaUrl(String(result[field]));
+      }
+    });
+  } else {
+    // Process default image fields
+    if ('image' in result && result.image) {
+      result.image = getMediaUrl(String(result.image));
+    }
+    
+    if ('coverImage' in result && result.coverImage) {
+      result.coverImage = getMediaUrl(String(result.coverImage));
+    }
+    
+    if ('thumbnail' in result && result.thumbnail) {
+      result.thumbnail = getMediaUrl(String(result.thumbnail));
+    }
+    
+    // Process arrays of images
+    if ('images' in result && result.images && Array.isArray(result.images)) {
+      result.images = result.images.map((img: string) => getMediaUrl(img));
+    }
   }
   
   return result as T;
