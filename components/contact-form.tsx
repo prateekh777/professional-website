@@ -126,11 +126,12 @@ export function ContactForm() {
       <Button 
         type="submit" 
         disabled={isSubmitting} 
-        className="w-full bg-black text-white hover:bg-gray-800"
+        className="w-full bg-black text-white hover:bg-gray-800 font-bold text-lg py-6"
+        style={{ color: '#ffffff', backgroundColor: '#000000', textShadow: '0 0 2px rgba(255,255,255,0.5)' }}
       >
         {isSubmitting ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             Sending...
           </>
         ) : (
