@@ -55,6 +55,17 @@ export const ProjectSchema = z.object({
 
 export type Project = z.infer<typeof ProjectSchema>;
 
+// Define the Media schema
+export const MediaSchema = z.object({
+  id: z.string().optional(),
+  url: z.string(),
+  type: z.string().optional(),
+  title: z.string().optional(),
+  description: z.string().optional(),
+});
+
+export type Media = z.infer<typeof MediaSchema>;
+
 // Define the Interest Media schema
 export const InterestMediaSchema = z.object({
   id: z.string().optional(),
@@ -90,6 +101,7 @@ export const SectionSchema = z.object({
   type: z.string().optional(),
   featured: z.boolean().optional(),
   buttons: z.array(ActionSchema).optional(),
+  media: z.array(MediaSchema).optional(),
 });
 
 export type Section = z.infer<typeof SectionSchema>;

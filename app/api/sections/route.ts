@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 import storageInstance from "@/lib/storage-instance";
-import { insertSectionSchema, Section } from "@/lib/schemas";
+import { SectionSchema, insertSectionSchema } from "@/lib/schemas";
 import { getMediaUrl, formatMediaUrls } from "@/lib/s3-url";
 
 // Force dynamic rendering for this route
@@ -14,29 +14,18 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(request: NextRequest) {
   try {
-    // Get the type query parameter
+    // Get query parameters
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get("type");
+    const type = searchParams.get('type') || undefined;
 
-    // Get sections from the database
-    const sections = await storageInstance.getSections(type || undefined);
+    // Get sections from storage
+    const sections = await storageInstance.getSections(type);
 
-    // Transform S3 URLs for media fields
-    const transformedSections = sections.map((section: Section) => ({
-      ...section,
-      media: section.media ? formatMediaUrls(section.media) : undefined,
-    }));
-
-    // Return the sections
-    return NextResponse.json(transformedSections);
+    // Return sections
+    return NextResponse.json({ sections });
   } catch (error) {
-    console.error("Error getting sections:", error);
-
-    // Return an error response
-    return NextResponse.json(
-      { error: "Failed to get sections" },
-      { status: 500 }
-    );
+    console.error('Error in GET /api/sections:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -47,38 +36,19 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Parse the request body
+    // Parse request body
     const body = await request.json();
 
-    // Validate the request body
-    const validatedSection = insertSectionSchema.parse(body);
+    // Validate request body against schema
+    const validatedData = insertSectionSchema.parse(body);
 
-    // Create the section
-    const section = await storageInstance.createSection(validatedSection);
+    // Create section in storage
+    const section = await storageInstance.createSection(validatedData);
 
-    // Transform S3 URLs for media fields in the response
-    const transformedSection = {
-      ...section,
-      media: section.media ? formatMediaUrls(section.media) : undefined,
-    };
-
-    // Return the created section
-    return NextResponse.json(transformedSection, { status: 201 });
+    // Return created section
+    return NextResponse.json({ section });
   } catch (error) {
-    console.error("Error creating section:", error);
-
-    // Handle validation errors
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: "Validation error", details: error.errors },
-        { status: 400 }
-      );
-    }
-
-    // Return a generic error response
-    return NextResponse.json(
-      { error: "Failed to create section" },
-      { status: 500 }
-    );
+    console.error('Error in POST /api/sections:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
