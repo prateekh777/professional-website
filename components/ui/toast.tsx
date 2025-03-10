@@ -140,6 +140,8 @@ type ToastType = {
   description?: string
   action?: ToastActionElement
   variant?: "default" | "destructive"
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 const actionTypes = {
@@ -255,6 +257,12 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToastType, "id">
 
+interface ToastReturn {
+  id: string
+  dismiss: () => void
+  update: (props: Partial<ToastType>) => void
+}
+
 function toast({ ...props }: Toast) {
   const id = generateId()
 
@@ -272,7 +280,7 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
+      onOpenChange: (open: boolean) => {
         if (!open) dismiss()
       },
     },
@@ -285,7 +293,12 @@ function toast({ ...props }: Toast) {
   }
 }
 
-function useToast() {
+interface UseToastReturn extends State {
+  toast: (props: Toast) => ToastReturn
+  dismiss: (toastId?: string) => void
+}
+
+function useToast(): UseToastReturn {
   const [state, setState] = useState<State>(memoryState)
 
   useEffect(() => {
