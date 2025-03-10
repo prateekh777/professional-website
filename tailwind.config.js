@@ -17,7 +17,7 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        aeonik: ["Aeonik TRIAL", "sans-serif"],
+        aeonik: ["Aeonik", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
