@@ -255,18 +255,18 @@ function dispatch(action: Action) {
   })
 }
 
-type Toast = Omit<ToastType, "id">
-
-interface ToastReturn {
+type ToastReturn = {
   id: string
   dismiss: () => void
   update: (props: Partial<ToastType>) => void
 }
 
-function toast({ ...props }: Toast) {
+type Toast = Omit<ToastType, "id">
+
+function toast({ ...props }: Toast): ToastReturn {
   const id = generateId()
 
-  const update = (props: ToastType) =>
+  const update = (props: Partial<ToastType>) =>
     dispatch({
       type: actionTypes.UPDATE_TOAST,
       toast: { ...props, id },
@@ -274,20 +274,22 @@ function toast({ ...props }: Toast) {
 
   const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id })
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) dismiss()
+  }
+
   dispatch({
     type: actionTypes.ADD_TOAST,
     toast: {
       ...props,
       id,
       open: true,
-      onOpenChange: (open: boolean) => {
-        if (!open) dismiss()
-      },
+      onOpenChange: handleOpenChange,
     },
   })
 
   return {
-    id: id,
+    id,
     dismiss,
     update,
   }
