@@ -26,6 +26,7 @@ export const serverEnv = {
   MONGODB_URI: process.env.MONGODB_URI,
   
   // Email addresses
+  SENDGRID_VERIFIED_SENDER: process.env.SENDGRID_VERIFIED_SENDER || 'noreply@prateekhakay.com',
   EMAIL_FROM: process.env.EMAIL_FROM || 'noreply@prateekhakay.com',
   EMAIL_TO: process.env.EMAIL_TO || 'prateek@edoflip.com',
   

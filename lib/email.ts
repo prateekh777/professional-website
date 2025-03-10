@@ -83,7 +83,7 @@ export async function sendContactFormEmail(name: string, email: string, message:
     console.log(`SendGrid API key found: ${sendgridApiKey.substring(0, 5)}...${sendgridApiKey.substring(sendgridApiKey.length - 3)}`);
     
     // Use verified sender email from environment or fallback to the hardcoded one
-    const verifiedSender = serverEnv.EMAIL_FROM || 'prateek@edoflip.com';
+    const verifiedSender = serverEnv.SENDGRID_VERIFIED_SENDER || serverEnv.EMAIL_FROM || 'prateek@edoflip.com';
     const recipientEmail = serverEnv.EMAIL_TO || 'prateek@edoflip.com';
     
     console.log(`Using sender email: ${verifiedSender}`);
