@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { sendContactFormEmail } from '@/lib/email';
+import { sendContactFormEmail, verifyRecaptcha } from '@/lib/email';
 import { serverEnv } from '@/lib/env';
 
 // Define the contact form schema
@@ -10,61 +10,6 @@ const contactFormSchema = z.object({
   message: z.string().min(10, "Message must be at least 10 characters"),
   recaptchaToken: z.string(),
 });
-
-// Function to verify reCAPTCHA token
-async function verifyRecaptcha(token: string): Promise<boolean> {
-  console.log(`🔒 Verifying reCAPTCHA token: ${token ? token.substring(0, 20) + '...' : 'No token provided'}`);
-  
-  // For Google's test keys, always return true as they're meant for testing
-  if (token && token.length > 0) {
-    console.log('🔒 Using Google test keys - bypassing actual verification');
-    return true;
-  }
-  
-  // Check if token exists
-  if (!token) {
-    console.error('❌ reCAPTCHA verification failed: No token provided');
-    return false;
-  }
-  
-  // Use Google's test secret key directly
-  const secretKey = serverEnv.RECAPTCHA_SECRET_KEY;
-  console.log('🔒 Using reCAPTCHA secret key for verification');
-  
-  try {
-    // Create form data for the reCAPTCHA API
-    const formData = new URLSearchParams();
-    formData.append('secret', secretKey);
-    formData.append('response', token);
-    
-    console.log('🔒 Sending verification request to Google reCAPTCHA API');
-    
-    // Send verification request to Google's reCAPTCHA API
-    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: formData.toString(),
-    });
-    
-    // Check if the response is OK
-    if (!response.ok) {
-      console.error(`❌ reCAPTCHA API responded with status: ${response.status}`);
-      return false;
-    }
-    
-    // Parse the response
-    const data = await response.json();
-    console.log('🔒 reCAPTCHA API response:', data);
-    
-    // Return whether the verification was successful
-    return data.success === true;
-  } catch (error) {
-    console.error('❌ Error verifying reCAPTCHA token:', error);
-    return false;
-  }
-}
 
 export async function POST(request: Request) {
   console.log('📨 ===== CONTACT FORM SUBMISSION =====');
@@ -89,20 +34,6 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    
-    // Verify reCAPTCHA token
-    console.log('📨 Starting reCAPTCHA verification...');
-    const isRecaptchaValid = await verifyRecaptcha(body.recaptchaToken);
-    
-    if (!isRecaptchaValid) {
-      console.error('❌ reCAPTCHA verification failed');
-      return NextResponse.json(
-        { success: false, message: 'reCAPTCHA verification failed. Please try again.' },
-        { status: 400 }
-      );
-    }
-    
-    console.log('✅ reCAPTCHA verification successful');
     
     // Check environment variables
     console.log('📨 Checking environment variables...');
@@ -137,7 +68,13 @@ export async function POST(request: Request) {
     
     // Send email using our utility
     console.log('📨 Starting email sending process...');
-    const emailResult = await sendContactFormEmail(body.name, body.email, body.message);
+    const emailResult = await sendContactFormEmail(
+      body.name, 
+      body.email, 
+      body.message,
+      body.recaptchaToken
+    );
+    
     console.log('📨 Email sending result:', emailResult);
     
     if (!emailResult.success) {
