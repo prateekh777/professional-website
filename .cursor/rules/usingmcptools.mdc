@@ -1,0 +1,9 @@
+---
+description: To iterate effectively with the feedback from MCP tools
+globs: Every time I enter a prompt in Agent Mode, execute it using MCP tools. Use BrowserTools, or any other available tools to get feedback, analyze the response, and iterate until solved.
+alwaysApply: false
+---
+
+# Your rule content
+- Every time I enter a prompt in Agent Mode, execute it using MCP tools. Use BrowserTools, or any other available tools to get feedback, analyze the response, and iterate until solved.
+

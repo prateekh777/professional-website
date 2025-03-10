@@ -97,13 +97,6 @@ export default function Contact() {
       const recaptchaToken = (window as any).grecaptcha?.getResponse();
       console.log("reCAPTCHA token obtained:", recaptchaToken ? `Yes (length: ${recaptchaToken.length})` : "No");
       
-      // For testing, if no token is obtained, use a dummy token
-      const tokenToSend = recaptchaToken || "test-token-for-development";
-      
-      if (!recaptchaToken) {
-        console.warn("No reCAPTCHA token obtained, using test token instead");
-      }
-      
       // Send the data to our API endpoint
       console.log("Sending form data to API with reCAPTCHA token");
       const response = await fetch('/api/contact', {
@@ -113,7 +106,7 @@ export default function Contact() {
         },
         body: JSON.stringify({
           ...data,
-          recaptchaToken: tokenToSend
+          recaptchaToken
         }),
       });
       

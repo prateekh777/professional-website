@@ -140,6 +140,8 @@ type ToastType = {
   description?: string
   action?: ToastActionElement
   variant?: "default" | "destructive"
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 const actionTypes = {
@@ -209,10 +211,11 @@ const reducer = (state: State, action: Action): State => {
           toastTimeouts.delete(toastId)
         }
       } else {
-        for (const [id, timeout] of toastTimeouts.entries()) {
+        // Convert Map entries to array before iterating to avoid TypeScript error
+        Array.from(toastTimeouts.entries()).forEach(([id, timeout]) => {
           clearTimeout(timeout)
           toastTimeouts.delete(id)
-        }
+        })
       }
 
       return {
@@ -252,12 +255,18 @@ function dispatch(action: Action) {
   })
 }
 
+type ToastReturn = {
+  id: string
+  dismiss: () => void
+  update: (props: Partial<ToastType>) => void
+}
+
 type Toast = Omit<ToastType, "id">
 
-function toast({ ...props }: Toast) {
+function toast({ ...props }: Toast): ToastReturn {
   const id = generateId()
 
-  const update = (props: ToastType) =>
+  const update = (props: Partial<ToastType>) =>
     dispatch({
       type: actionTypes.UPDATE_TOAST,
       toast: { ...props, id },
@@ -265,26 +274,33 @@ function toast({ ...props }: Toast) {
 
   const dismiss = () => dispatch({ type: actionTypes.DISMISS_TOAST, toastId: id })
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) dismiss()
+  }
+
   dispatch({
     type: actionTypes.ADD_TOAST,
     toast: {
       ...props,
       id,
       open: true,
-      onOpenChange: (open) => {
-        if (!open) dismiss()
-      },
+      onOpenChange: handleOpenChange,
     },
   })
 
   return {
-    id: id,
+    id,
     dismiss,
     update,
   }
 }
 
-function useToast() {
+interface UseToastReturn extends State {
+  toast: (props: Toast) => ToastReturn
+  dismiss: (toastId?: string) => void
+}
+
+function useToast(): UseToastReturn {
   const [state, setState] = useState<State>(memoryState)
 
   useEffect(() => {

@@ -6,7 +6,7 @@
 @layer base {
   @font-face {
     font-family: "Aeonik";
-    src: url("/fonts/AeonikTRIAL-Light.otf") format("opentype");
+    src: url("/Fonts/AeonikTRIAL-Light.otf") format("opentype");
     font-weight: 300;
     font-style: normal;
     font-display: swap;
@@ -14,7 +14,7 @@
 
   @font-face {
     font-family: "Aeonik";
-    src: url("/fonts/AeonikTRIAL-LightItalic.otf") format("opentype");
+    src: url("/Fonts/AeonikTRIAL-LightItalic.otf") format("opentype");
     font-weight: 300;
     font-style: italic;
     font-display: swap;
@@ -22,7 +22,7 @@
 
   @font-face {
     font-family: "Aeonik";
-    src: url("/fonts/AeonikTRIAL-Regular.otf") format("opentype");
+    src: url("/Fonts/AeonikTRIAL-Regular.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -30,7 +30,7 @@
 
   @font-face {
     font-family: "Aeonik";
-    src: url("/fonts/AeonikTRIAL-RegularItalic.otf") format("opentype");
+    src: url("/Fonts/AeonikTRIAL-RegularItalic.otf") format("opentype");
     font-weight: 400;
     font-style: italic;
     font-display: swap;
@@ -38,7 +38,7 @@
 
   @font-face {
     font-family: "Aeonik";
-    src: url("/fonts/AeonikTRIAL-Bold.otf") format("opentype");
+    src: url("/Fonts/AeonikTRIAL-Bold.otf") format("opentype");
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -46,7 +46,7 @@
 
   @font-face {
     font-family: "Aeonik";
-    src: url("/fonts/AeonikTRIAL-BoldItalic.otf") format("opentype");
+    src: url("/Fonts/AeonikTRIAL-BoldItalic.otf") format("opentype");
     font-weight: 700;
     font-style: italic;
     font-display: swap;
@@ -123,45 +123,10 @@
 @layer base {
   * {
     @apply border-border;
-    font-family: "Inter", system-ui, -apple-system, sans-serif !important;
   }
-
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: "Inter", system-ui, -apple-system, sans-serif !important;
-    background: linear-gradient(
-      180deg,
-      rgb(1000, 1000, 1000) 0%,
-      rgb(200, 190, 170) 100%
-    );
-    color: #333333;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-bold text-[#222222];
-    font-family: "Inter", system-ui, -apple-system, sans-serif !important;
-    letter-spacing: -0.02em;
-  }
-
-  p {
-    @apply text-[#222222];
-    font-family: "Inter", system-ui, -apple-system, sans-serif !important;
-    letter-spacing: 0.01em;
-  }
-
-  a,
-  button,
-  input,
-  textarea,
-  select,
-  span,
-  div {
-    font-family: "Inter", system-ui, -apple-system, sans-serif !important;
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
@@ -638,11 +603,11 @@ body {
   }
 }
 
-[data-state="open"].bottom-sheet {
+[data-state=open].bottom-sheet {
   animation: slideInFromBottom 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-[data-state="closed"].bottom-sheet {
+[data-state=closed].bottom-sheet {
   animation: slideOutToBottom 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
