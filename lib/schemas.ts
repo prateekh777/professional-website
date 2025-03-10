@@ -39,6 +39,22 @@ export const AiWorkSchema = z.object({
 
 export type AiWork = z.infer<typeof AiWorkSchema>;
 
+// Define the Project schema
+export const ProjectSchema = z.object({
+  id: z.string().optional(),
+  title: z.string(),
+  description: z.string(),
+  image: z.string().optional(),
+  url: z.string().optional(),
+  github: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  technologies: z.array(z.string()).optional(),
+  date: z.string().optional(),
+  featured: z.boolean().optional(),
+});
+
+export type Project = z.infer<typeof ProjectSchema>;
+
 // Define the Interest Media schema
 export const InterestMediaSchema = z.object({
   id: z.string().optional(),

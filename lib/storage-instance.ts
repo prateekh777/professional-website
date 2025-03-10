@@ -3,7 +3,7 @@
  * This is a placeholder implementation that can be replaced with actual storage logic
  */
 
-import { AiWork, Interest } from './schemas';
+import { AiWork, Interest, Project } from './schemas';
 
 const storageInstance = {
   // Placeholder method for getting files
@@ -26,6 +26,18 @@ const storageInstance = {
   getAiWork: async (id: string) => {
     // Return null as placeholder
     return null as AiWork | null;
+  },
+  
+  // Placeholder method for getting projects
+  getProjects: async (category?: string, featured?: boolean) => {
+    // Return empty array as placeholder
+    return [] as Project[];
+  },
+  
+  // Placeholder method for getting a single project
+  getProject: async (id: string) => {
+    // Return null as placeholder
+    return null as Project | null;
   },
   
   // Placeholder method for getting sections
