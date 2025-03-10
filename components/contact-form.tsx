@@ -123,7 +123,11 @@ export function ContactForm() {
         This form is protected by reCAPTCHA. For testing purposes, a test token is being used.
       </div>
       
-      <Button type="submit" disabled={isSubmitting} className="w-full">
+      <Button 
+        type="submit" 
+        disabled={isSubmitting} 
+        className="w-full bg-black text-white hover:bg-gray-800"
+      >
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
