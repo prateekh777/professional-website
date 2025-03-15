@@ -20,7 +20,7 @@ export default function Projects() {
         "Edoflip is a platform for personalized tutoring that helps students excel. With expert tutors and tailored learning plans, we've helped thousands of students in the US and EU boost their confidence, improve grades, and achieve academic success—one session at a time",
       imageUrl:
         "https://prateek-personal.s3.ap-south-1.amazonaws.com/Assets/Projects/Edoflip+Large+Image.png",
-      projectUrl: "https://example.com/ecommerce",
+      projectUrl: "https://www.edoflip.com",
       tags: ["React", "Node.js", "PostgreSQL", "Stripe"],
       position: "left",
     },
