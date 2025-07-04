@@ -27,6 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.className}>
+      <GTMHead gtmId="GTM-T6LPB56Z" />
       <body>
         <GTMBody gtmId="GTM-T6LPB56Z" />
         <QueryProvider>
@@ -37,7 +38,6 @@ export default function RootLayout({
             <FontChecker />
           </div>
           <Toaster />
-          <GTMHead gtmId="GTM-T6LPB56Z" />
         </QueryProvider>
       </body>
     </html>
